@@ -1,4 +1,6 @@
 import customtkinter
+from tkinter import *
+from PIL import Image, ImageTk
 
 class log_in:
 
@@ -30,6 +32,12 @@ class log_in:
 if __name__ == "__main__":
     app = customtkinter.CTk()
     app.geometry("400x400")
+
+    img = Image.open("Fondo.jpg")
+    img = img.resize((400,400))
+    render = ImageTk.PhotoImage(img)
+    lbl_image = customtkinter.CTkLabel(app, image=render, text="")
+    lbl_image.place(x=0,y=0)
 
     log_in(app)
 
