@@ -1,6 +1,9 @@
 import customtkinter
 from PIL import Image
 
+import passwd
+import connection_SQL
+
 class log_in:
 
     def __init__(self,app):
@@ -18,7 +21,7 @@ class log_in:
         self.txt_users = customtkinter.CTkEntry(self.frame,width=200)
         self.txt_users.place(x=50,y=160)
 
-        lbl_password = customtkinter.CTkLabel(self.frame, text="Password")
+        lbl_password = customtkinter.CTkLabel(self.frame, text="ID")
         lbl_password.place(x=50,y=190)
         self.txt_password = customtkinter.CTkEntry(self.frame, width=200)
         self.txt_password.place(x=50,y=220)
@@ -26,13 +29,18 @@ class log_in:
 
         btn_log_in = customtkinter.CTkButton(self.frame, text="Iniciar secion", command=self.log)
         btn_log_in.place(x=75, y=260)
+
+        self.select_database = connection_SQL.connect_DataBase('localhost','root',passwd.passwd(),'3306','cine_paraiso')
         
     def log(self):
-        if (self.txt_users.get() == "Rick" and self.txt_password.get() == "123"):
-            print("sesion iniciada")
-        else:
-            print("contraseña incorrecta")
-
+        user = self.select_database.Select_one('nombre', 'empleado', 'idempleado',self.txt_password.get())
+        try:
+            if (self.txt_users.get() == user[0]):
+                print("sesion iniciada")
+            else:
+                print("Nombre incorrecto")
+        except Exception as Ex:
+            print("ID incorrecto")
 
 
 if __name__ == "__main__":
