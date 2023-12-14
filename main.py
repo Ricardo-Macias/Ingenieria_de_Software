@@ -7,15 +7,19 @@ class Menu:
         self.user = user
         self.ID = ID
 
+        img_2 = Image.open("Image\\Img_sala.jpg")
+        render_2 = customtkinter.CTkImage(img_2, size=(800, 450))
+        lbl_fondo = customtkinter.CTkLabel(self.windows, image=render_2, text='',)
+        lbl_fondo.place(x=0, y=0)
+
         frame_Menu = customtkinter.CTkFrame(self.windows, width=100, height=430)
         frame_Menu.place(x=10,y=10)
 
         img = Image.open("Image\\user-login.png")
         render = customtkinter.CTkImage(img, size=(50, 50))
-
         lbl_image = customtkinter.CTkLabel(frame_Menu, image=render, text='')
         lbl_image.place(x=25, y=10)
-        lbl_user = customtkinter.CTkLabel(frame_Menu,text=self.user)
+        lbl_user = customtkinter.CTkLabel(frame_Menu,text=self.user,width=80)
         lbl_user.place(x=10,y=60)
 
         self.btn_employee = customtkinter.CTkButton(frame_Menu,text="Empledo", command=self.Employee, width=80,height=40)
@@ -35,10 +39,18 @@ class Menu:
 
         self.btn_ticket = customtkinter.CTkButton(frame_Menu, text="Ticket", command=self.Ticket, width=80, height=40)
         self.btn_ticket.place(x=10, y=350)
+    
+    def status_btn_Menu(self,status):
+        self.btn_employee.configure(state=status)
+        self.btn_membership.configure(state=status)
+        self.btn_movie.configure(state=status)
+        self.btn_product.configure(state=status)
+        self.btn_showing.configure(state=status)
+        self.btn_ticket.configure(state=status)
 
     
     def Employee(self):
-        pass
+        self.status_btn_Menu('disabled')
 
     def Membership(self):
         pass
