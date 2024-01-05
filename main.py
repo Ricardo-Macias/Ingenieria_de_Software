@@ -1,5 +1,9 @@
 import customtkinter
+from tkinter import messagebox, ttk
 from PIL import Image
+
+import connection_SQL
+import passwd
 
 class Menu:
     def __init__(self,windows,user,ID):
@@ -41,6 +45,8 @@ class Menu:
 
         self.btn_ticket = customtkinter.CTkButton(frame_Menu, text="Ticket", command=self.Ticket, width=80, height=40)
         self.btn_ticket.place(x=10, y=350)
+
+        self.employee = connection_SQL.employee('localhost','root',passwd.passwd(),'3306','cine_paraiso')
     
     def status_btn_Menu(self,status):
         self.btn_employee.configure(state=status)
@@ -52,9 +58,30 @@ class Menu:
 
     
     def Employee(self):
+        self.band_Add = True
         self.status_btn_Menu('disabled')
         frame_employee = customtkinter.CTkFrame(self.windows,width=670,height=430)
         frame_employee.place(x=120,y=10)
+
+        def add_table():
+            employee = self.employee.Select_all('*','empleado')
+            for count in employee:
+                table_Employee.insert("", customtkinter.END, text=count[1], values=[
+                             count[2], count[3], count[4], count[5], count[6]])
+        
+        def clear_table():
+            register = table_Employee.get_children()
+            for count_register in register:
+                table_Employee.delete(count_register)
+
+        def clean_txt():
+            txt_id.delete(0,customtkinter.END)
+            txt_name.delete(0,customtkinter.END)
+            txt_rfc.delete(0,customtkinter.END)
+            txt_email.delete(0,customtkinter.END)
+            txt_phone.delete(0,customtkinter.END)
+            txt_adress.delete(0,customtkinter.END)
+            cmb_post.set('')
 
         def status_txt(status):
             cmb_post.configure(state=status)
@@ -64,25 +91,97 @@ class Menu:
             txt_phone.configure(state=status)
             txt_adress.configure(state=status)
 
+        def status_btn(status):
+            btn_save.configure(state=status)
+            btn_cancel.configure(state=status)
+
+        def status_btn_add(status):
+            btn_add.configure(state=status)
+            btn_modifier.configure(state=status)
+            btn_leave.configure(state=status)
+
         def close():
             frame_employee.destroy()
             self.status_btn_Menu('normal')
-
+        
         def Add():
+            self.band_Add = True
+            id = len(self.employee.Select_all('*','empleado')) + 1
+
+            txt_id.configure(state='normal')
+            txt_id.insert(0,id)
+            txt_id.configure(state='disabled')
+
             status_txt('normal')
+            status_btn_add('disabled')
+            status_btn('normal')
             cmb_post.set('GNL')
 
         def Modifier():
-            pass
+            self.band_Add = False
+            select = table_Employee.focus()
+            key = table_Employee.item(select, 'text')
+
+            if key == "":
+                messagebox.showwarning("Modificar", "Selecciona un elemento")
+            else:
+                status_txt('normal')
+                value = table_Employee.item(select, 'values')
+
+                txt_id.configure(state='normal')
+                id = self.employee.Select_one('idempleado','empleado','rfc',f"'{key}'")
+
+                txt_id.insert(0, id)
+                txt_rfc.insert(0, key)
+                txt_name.insert(0, value[0])
+                txt_email.insert(0, value[1])
+                txt_phone.insert(0, value[2])
+                txt_adress.insert(0, value[3])
+                cmb_post.set(value[4])
+
+                txt_id.configure(state='disabled')
+                status_btn_add('disabled')
+                status_btn('normal')
 
         def Leave():
-            pass
+            select = table_Employee.focus()
+            key = table_Employee.item(select, 'text')
+
+            if key == "":
+                messagebox.showwarning("Baja", "Selecciona un elemento")
+            else:
+                value = table_Employee.item(select, 'values')
+                option = messagebox.askquestion('Baja', f'Dar de baja a {value[0]}')
+                if option == 'yes':
+                    id = self.employee.Select_one('idempleado','empleado','rfc',f"'{key}'")
+                    self.employee.leave(int(id[0]))
 
         def Save():
-            pass
+            if self.band_Add:
+                self.employee.Add(txt_id.get(),txt_rfc.get(),txt_name.get(),txt_email.get(),txt_phone.get(),txt_adress.get(),cmb_post.get())
+                messagebox.showinfo("Agregar","Nuevo empleado agregado")
+            else:
+                self.employee.modifier(txt_id.get(), txt_rfc.get(), txt_name.get(), txt_email.get(), txt_phone.get(), txt_adress.get(), cmb_post.get())
+                messagebox.showinfo('Modificar','Se modificaron los datos del empleado')
+            txt_id.configure(state='normal')
+            clean_txt()
+            txt_id.configure(state='disabled')
+            status_btn('disabled')
+            status_btn_add('normal')
+            status_txt('disabled')
+            clear_table()
+            add_table()
+
 
         def Cancel():
-            pass
+            option = messagebox.askokcancel('Cancelar','Seguro que quiere canccelar')
+            if option:
+                txt_id.configure(state='normal')
+                clean_txt()
+                txt_id.configure(state='disabled')
+                status_btn('disabled')
+                status_btn_add('normal')
+                status_txt('disabled')
 
         lbl_id = customtkinter.CTkLabel(frame_employee,text="ID")
         lbl_id.place(x=30, y=40)
@@ -138,8 +237,28 @@ class Menu:
         btn_cancel = customtkinter.CTkButton(frame_employee,text="Cancelar",width=100,fg_color="RED",command=Cancel)
         btn_cancel.place(x=290,y=200)
 
+        table_Employee = ttk.Treeview(frame_employee,columns=('col1','col2','col3','col4','col5'))
+        table_Employee.column('#0',width=100)
+        table_Employee.column('col1',width=90)
+        table_Employee.column('col2',width=120)
+        table_Employee.column('col3',width=120)
+        table_Employee.column('col4',width=100)
+        table_Employee.column('col5',width=140)
+
+        table_Employee.heading('#0',text='RFC')
+        table_Employee.heading('col1',text='Nombre')
+        table_Employee.heading('col2', text='Correo')
+        table_Employee.heading('col3',text='Telefono')
+        table_Employee.heading('col4',text='Direccion')
+        table_Employee.heading('col5', text='Cargo')
+
+        table_Employee.place(x=50, y=380,width=800)
+
+        add_table()
+
         txt_id.configure(state='disabled')
         status_txt('disabled')
+        status_btn('disabled')
 
     def Membership(self):
         pass
