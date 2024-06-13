@@ -273,7 +273,7 @@ class Menu:
         frame_product.place(x=120,y=10)
 
         def add_table():
-            product = self.employee.Select_all('*','producto')
+            product = self.product.Select_all('*','producto')
             for count in product:
                 table_product.insert("", customtkinter.END, text=count[0], values=[
                              count[1], count[2], count[3]])
@@ -285,20 +285,14 @@ class Menu:
 
         def clean_txt():
             txt_id.delete(0,customtkinter.END)
-            txt_name.delete(0,customtkinter.END)
-            txt_rfc.delete(0,customtkinter.END)
-            txt_email.delete(0,customtkinter.END)
-            txt_phone.delete(0,customtkinter.END)
-            txt_adress.delete(0,customtkinter.END)
-            cmb_post.set('')
+            txt_product.delete(0,customtkinter.END)
+            txt_price.delete(0,customtkinter.END)
+            txt_stock.delete(0,customtkinter.END)
 
         def status_txt(status):
-            cmb_post.configure(state=status)
-            txt_rfc.configure(state=status)
-            txt_name.configure(state=status)
-            txt_email.configure(state=status)
-            txt_phone.configure(state=status)
-            txt_adress.configure(state=status)
+            txt_product.configure(state=status)
+            txt_price.configure(state=status)
+            txt_stock.configure(state=status)
 
         def status_btn(status):
             btn_save.configure(state=status)
