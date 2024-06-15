@@ -308,8 +308,8 @@ class Menu:
             self.status_btn_Menu('normal')
         
         def Add():
-            self.band_employee = True
-            id = len(self.employee.Select_all('*','empleado')) + 1
+            self.band_product = True
+            id = len(self.product.Select_all('*','producto')) + 1
 
             txt_id.configure(state='normal')
             txt_id.insert(0,id)
@@ -318,7 +318,6 @@ class Menu:
             status_txt('normal')
             status_btn_add('disabled')
             status_btn('normal')
-            cmb_post.set('GNL')
 
         def Modifier():
             self.band_employee = False
