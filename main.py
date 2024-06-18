@@ -320,7 +320,7 @@ class Menu:
             status_btn('normal')
 
         def Modifier():
-            self.band_employee = False
+            self.band_product = False
             select = table_product.focus()
             key = table_product.item(select, 'text')
 
@@ -331,15 +331,12 @@ class Menu:
                 value = table_product.item(select, 'values')
 
                 txt_id.configure(state='normal')
-                id = self.employee.Select_one('idempleado','empleado','rfc',f"'{key}'")
+                id = self.product.Select_one('idproducto','producto','nombre',f"'{key}'")
 
                 txt_id.insert(0, id)
-                txt_rfc.insert(0, key)
-                txt_name.insert(0, value[0])
-                txt_email.insert(0, value[1])
-                txt_phone.insert(0, value[2])
-                txt_adress.insert(0, value[3])
-                cmb_post.set(value[4])
+                txt_product.insert(0, key)
+                txt_price.insert(0, value[0])
+                txt_stock.insert(0, value[1])
 
                 txt_id.configure(state='disabled')
                 status_btn_add('disabled')
