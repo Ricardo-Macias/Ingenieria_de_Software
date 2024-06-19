@@ -352,16 +352,16 @@ class Menu:
                 value = table_product.item(select, 'values')
                 option = messagebox.askquestion('Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    id = self.employee.Select_one('idempleado','empleado','rfc',f"'{key}'")
-                    self.employee.leave(int(id[0]))
+                    id = self.product.Select_one('idproducto','producto','nombre',f"'{key}'")
+                    self.product.leave(int(id[0]))
 
         def Save():
-            if self.band_employee:
-                self.employee.Add(txt_id.get(),txt_rfc.get(),txt_name.get(),txt_email.get(),txt_phone.get(),txt_adress.get(),cmb_post.get())
-                messagebox.showinfo("Agregar","Nuevo empleado agregado")
+            if self.band_product:
+                self.product.Add(txt_id.get(),txt_product.get(),txt_price.get(),txt_stock.get())
+                messagebox.showinfo("Agregar","Nuevo producto agregado")
             else:
-                self.employee.modifier(txt_id.get(), txt_rfc.get(), txt_name.get(), txt_email.get(), txt_phone.get(), txt_adress.get(), cmb_post.get())
-                messagebox.showinfo('Modificar','Se modificaron los datos del empleado')
+                self.product.modifier(txt_id.get(), txt_product.get(), txt_price.get(), txt_stock.get())
+                messagebox.showinfo('Modificar','Se modificaron los datos del producto')
             txt_id.configure(state='normal')
             clean_txt()
             txt_id.configure(state='disabled')
