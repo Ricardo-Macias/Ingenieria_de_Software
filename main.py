@@ -382,42 +382,42 @@ class Menu:
                 status_txt('disabled')
 
         lbl_id = customtkinter.CTkLabel(frame_product,text="ID")
-        lbl_id.place(x=30, y=40)
+        lbl_id.place(x=50, y=40)
         txt_id = customtkinter.CTkEntry(frame_product, width=50)
-        txt_id.place(x=50,y=40)
+        txt_id.place(x=70,y=40)
 
         lbl_product = customtkinter.CTkLabel(frame_product,text="Producto")
-        lbl_product.place(x=30, y=80)
+        lbl_product.place(x=50, y=80)
         txt_product = customtkinter.CTkEntry(frame_product,width=140)
-        txt_product.place(x=80,y=80)
+        txt_product.place(x=120,y=80)
 
         lbl_price = customtkinter.CTkLabel(frame_product, text="Precio")
-        lbl_price.place(x=250,y=80)
-        txt_price = customtkinter.CTkEntry(frame_product,width=140)
-        txt_price.place(x=305,y=80)
+        lbl_price.place(x=50,y=120)
+        txt_price = customtkinter.CTkEntry(frame_product,width=50)
+        txt_price.place(x=120,y=120)
 
         lbl_stock = customtkinter.CTkLabel(frame_product,text="Stock")
-        lbl_stock.place(x=30, y=120)
-        txt_stock = customtkinter.CTkEntry(frame_product, width=230)
-        txt_stock.place(x=80,y=120)
+        lbl_stock.place(x=50, y=160)
+        txt_stock = customtkinter.CTkEntry(frame_product, width=50)
+        txt_stock.place(x=120,y=160)
 
         btn_close = customtkinter.CTkButton(frame_product,width=10,height=10,text="X",fg_color="RED",command=close)
         btn_close.place(x=0,y=0)
 
         btn_add = customtkinter.CTkButton(frame_product, text="Agregar", width=70, height=40, fg_color="DARKBLUE", command=Add)
-        btn_add.place(x=500,y=80)
+        btn_add.place(x=400,y=80)
 
         btn_modifier = customtkinter.CTkButton(frame_product, text="Modificar", width=70, height=40, fg_color="DARKBLUE", command=Modifier)
-        btn_modifier.place(x=500,y=130)
+        btn_modifier.place(x=400,y=130)
 
         btn_leave = customtkinter.CTkButton(frame_product, text="Baja",width=70, height=40,fg_color="DARKBLUE", command=Leave)
-        btn_leave.place(x=500,y=180)
+        btn_leave.place(x=400,y=180)
 
         btn_save = customtkinter.CTkButton(frame_product,text="Guardar",width=100,fg_color="GREEN",command=Save)
-        btn_save.place(x=290,y=160)
+        btn_save.place(x=250,y=130)
 
         btn_cancel = customtkinter.CTkButton(frame_product,text="Cancelar",width=100,fg_color="RED",command=Cancel)
-        btn_cancel.place(x=290,y=200)
+        btn_cancel.place(x=250,y=170)
 
         table_product = ttk.Treeview(frame_product,columns=('col1','col2','col3'))
         table_product.column('#0',width=100)
