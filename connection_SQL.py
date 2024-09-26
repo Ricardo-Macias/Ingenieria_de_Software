@@ -75,7 +75,7 @@ class product(connect_DataBase):
     def Add(self,id,name,price,stock):
         try:
             cursor = self.conecction.cursor()
-            sql = f"INSER INTO producto(idproducto,nombre,precio,stock) VALUES ({id}, '{name}', {price}, {stock});"
+            sql = f"INSERT INTO producto(idproducto,nombre,precio,stock) VALUES ({id}, '{name}', {price}, {stock});"
             cursor.execute(sql)
             self.conecction.commit()
         except Exception as Ex:
