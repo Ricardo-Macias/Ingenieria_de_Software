@@ -331,12 +331,11 @@ class Menu:
                 value = table_product.item(select, 'values')
 
                 txt_id.configure(state='normal')
-                id = self.product.Select_one('idproducto','producto','nombre',f"'{key}'")
 
-                txt_id.insert(0, id)
-                txt_product.insert(0, key)
-                txt_price.insert(0, value[0])
-                txt_stock.insert(0, value[1])
+                txt_id.insert(0, key)
+                txt_product.insert(0, value[0])
+                txt_price.insert(0, value[1])
+                txt_stock.insert(0, value[2])
 
                 txt_id.configure(state='disabled')
                 status_btn_add('disabled')
@@ -410,7 +409,7 @@ class Menu:
         btn_modifier = customtkinter.CTkButton(frame_product, text="Modificar", width=70, height=40, fg_color="DARKBLUE", command=Modifier)
         btn_modifier.place(x=400,y=130)
 
-        btn_leave = customtkinter.CTkButton(frame_product, text="Baja",width=70, height=40,fg_color="DARKBLUE", command=Leave)
+        btn_leave = customtkinter.CTkButton(frame_product, text="Borrar",width=70, height=40,fg_color="DARKBLUE", command=Leave)
         btn_leave.place(x=400,y=180)
 
         btn_save = customtkinter.CTkButton(frame_product,text="Guardar",width=100,fg_color="GREEN",command=Save)
