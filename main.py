@@ -453,6 +453,7 @@ if __name__ == "__main__":
 
     app = customtkinter.CTk()
     app.geometry('800x450')
+    app.resizable(False,False)
     app.title('Cinema Paraiso')
 
     Menu(app,name,ID)
