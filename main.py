@@ -351,8 +351,7 @@ class Menu:
                 value = table_product.item(select, 'values')
                 option = messagebox.askquestion('Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    id = self.product.Select_one('idproducto','producto','nombre',f"'{key}'")
-                    self.product.leave(int(id[0]))
+                    self.product.leave(key)
 
         def Save():
             if self.band_product:
