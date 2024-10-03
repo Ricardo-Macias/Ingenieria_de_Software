@@ -83,9 +83,17 @@ class product(connect_DataBase):
         finally:
             cursor.close()
 
+    def Modifier(self,id,name,price,stock):
+        try:
+            cursor = self.conecction.cursor()
+            sql = f"UPDATE producto SET nombre = '{name}', precio = {price}, stock = {stock} WHERE idproducto = {id};"
+            cursor.execute(sql)
+            self.conecction.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
 
-    def Modifier(self):
-        pass
 
     def Delete(self):
         pass
