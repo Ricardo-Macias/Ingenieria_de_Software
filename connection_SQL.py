@@ -95,5 +95,13 @@ class product(connect_DataBase):
             cursor.close()
 
 
-    def Delete(self):
-        pass
+    def Delete(self,id):
+        try:
+            cursor = self.conecction.cursor()
+            sql = f"DELETE FROM producto WHERE idproducto = {id}"
+            cursor.execute(sql)
+            self.conecction.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
