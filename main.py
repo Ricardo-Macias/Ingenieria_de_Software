@@ -349,16 +349,18 @@ class Menu:
                 messagebox.showwarning("Baja", "Selecciona un elemento")
             else:
                 value = table_product.item(select, 'values')
-                option = messagebox.askquestion('Baja', f'Dar de baja a {value[0]}')
+                option = messagebox.askquestion('Baja', f'Seguro de querer eliminar el producto {value[0]}')
                 if option == 'yes':
-                    self.product.leave(key)
+                    self.product.Delete(key)
+                    clear_table()
+                    add_table()
 
         def Save():
             if self.band_product:
                 self.product.Add(txt_id.get(),txt_product.get(),txt_price.get(),txt_stock.get())
                 messagebox.showinfo("Agregar","Nuevo producto agregado")
             else:
-                self.product.modifier(txt_id.get(), txt_product.get(), txt_price.get(), txt_stock.get())
+                self.product.Modifier(txt_id.get(), txt_product.get(), txt_price.get(), txt_stock.get())
                 messagebox.showinfo('Modificar','Se modificaron los datos del producto')
             txt_id.configure(state='normal')
             clean_txt()
