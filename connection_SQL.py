@@ -1,6 +1,6 @@
 import mysql.connector
 from datetime import date
-
+import passwd
 
 class connect_DataBase:
     def __init__(self,Host,username,PassWord,Port,database_name):
@@ -33,6 +33,18 @@ class connect_DataBase:
         finally:
             cursor.close()
             return data
+        
+    def last_id(self, search, table):
+        try:
+            cursor = self.connection.cursor()
+            sql = f"SELECT MAX( {search} ) FROM {table};"
+            cursor.execute(sql)
+            data = cursor.fetchone()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+            return data[0]
 
 class employee(connect_DataBase):
 
