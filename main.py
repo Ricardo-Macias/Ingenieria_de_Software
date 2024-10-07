@@ -309,7 +309,7 @@ class Menu:
         
         def Add():
             self.band_product = True
-            id = len(self.product.Select_all('*','producto')) + 1
+            id = self.product.last_id('idproducto','producto') + 1
 
             txt_id.configure(state='normal')
             txt_id.insert(0,id)
