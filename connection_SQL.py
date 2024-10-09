@@ -130,7 +130,23 @@ class membership(connect_DataBase):
             cursor.close()
 
     def Modifier(self, id, name, email, type):
-        pass
+        try:
+            cursor = self.connection.cursor()
+            sql = f"UPDATE membresia SET nombre = '{name}', email = '{email}', tipo = '{type}' WHERE idmembresia = {id};"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
 
     def Leave(self, id):
-        pass
+        try:
+            cursor = self.connection.cursor()
+            sql = f"UPDATE membresia SET fecha_baja = '{date.today()}' WHERE idmembresia = {id};"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
