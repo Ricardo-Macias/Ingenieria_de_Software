@@ -106,7 +106,6 @@ class product(connect_DataBase):
         finally:
             cursor.close()
 
-
     def Delete(self,id):
         try:
             cursor = self.connection.cursor()
@@ -117,3 +116,21 @@ class product(connect_DataBase):
             print(Ex)
         finally:
             cursor.close()
+
+class membership(connect_DataBase):
+    def Add(self,id, name, email, type):
+        try:
+            cursor = self.connection.cursor()
+            sql = f"INSERT INTO membresia(idmembresia, nombre, email, tipo, fecha_alta) VALUES({id}, '{name}', '{email}', '{type}', '{date.today()}');"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+
+    def Modifier(self, id, name, email, type):
+        pass
+
+    def Leave(self, id):
+        pass
