@@ -384,17 +384,17 @@ class Menu:
         lbl_name = customtkinter.CTkLabel(frame_membership, text="Nombre")
         lbl_name.place(x=30, y=80)
         txt_name = customtkinter.CTkEntry(frame_membership, width=140)
-        txt_name.place(x=80, y=80)
+        txt_name.place(x=90, y=80)
 
-        lbl_email = customtkinter.CTkLabel(frame_membership, text="Email")
-        lbl_email.place(x=250, y=80)
-        txt_email = customtkinter.CTkEntry(frame_membership, width=140)
-        txt_email.place(x=305, y=80)
+        lbl_email = customtkinter.CTkLabel(frame_membership, text="correo")
+        lbl_email.place(x=30, y=120)
+        txt_email = customtkinter.CTkEntry(frame_membership, width=240)
+        txt_email.place(x=90, y=120)
 
-        lbl_type = customtkinter.CTkLabel(frame_membership, text="Correo")
-        lbl_type.place(x=30, y=120)
-        cmb_type = customtkinter.CTkComboBox(frame_membership, values=["SLV","GLD","PLT"] ,width=230)
-        cmb_type.place(x=80, y=120)
+        lbl_type = customtkinter.CTkLabel(frame_membership, text="Tipo")
+        lbl_type.place(x=30, y=160)
+        cmb_type = customtkinter.CTkComboBox(frame_membership, values=["SLV","GLD","PLT"] ,width=100)
+        cmb_type.place(x=90, y=160)
         cmb_type.set("")
 
         btn_close = customtkinter.CTkButton(
@@ -415,11 +415,11 @@ class Menu:
 
         btn_save = customtkinter.CTkButton(
             frame_membership, text="Guardar", width=100, fg_color="GREEN", command=Save)
-        btn_save.place(x=290, y=160)
+        btn_save.place(x=140, y=210)
 
         btn_cancel = customtkinter.CTkButton(
             frame_membership, text="Cancelar", width=100, fg_color="RED", command=Cancel)
-        btn_cancel.place(x=290, y=200)
+        btn_cancel.place(x=260, y=210)
 
         table_Membership = ttk.Treeview(frame_membership, columns=(
             'col1', 'col2', 'col3', 'col4'))
