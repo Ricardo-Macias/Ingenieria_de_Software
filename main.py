@@ -1,9 +1,9 @@
 import customtkinter
 from tkinter import messagebox, ttk
-from PIL import Image
 
 import connection_SQL
 import passwd
+import files
 
 class Menu:
     def __init__(self,windows,user,ID):
@@ -11,17 +11,15 @@ class Menu:
         self.user = user
         self.ID = ID
 
-        img_2 = Image.open("Image\\Img_sala.jpg")
-        render_2 = customtkinter.CTkImage(img_2, size=(800, 450))
-        lbl_fondo = customtkinter.CTkLabel(self.windows, image=render_2, text='',)
+        img_2 = files.open_image("Image\\Img_sala.jpg",(740, 450))
+        lbl_fondo = customtkinter.CTkLabel(self.windows, image=img_2, text='',)
         lbl_fondo.place(x=0, y=0)
 
         frame_Menu = customtkinter.CTkFrame(self.windows, width=100, height=430)
         frame_Menu.place(x=10,y=10)
 
-        img = Image.open("Image\\user-login.png")
-        render = customtkinter.CTkImage(img, size=(50, 50))
-        lbl_image = customtkinter.CTkLabel(frame_Menu, image=render, text='')
+        img = files.open_image("Image\\user-login.png",(50,50))
+        lbl_image = customtkinter.CTkLabel(frame_Menu, image=img, text='')
         lbl_image.place(x=25, y=10)
         lbl_user = customtkinter.CTkLabel(frame_Menu,text=self.user,width=80)
         lbl_user.place(x=10,y=60)
@@ -49,6 +47,9 @@ class Menu:
         self.employee = connection_SQL.employee('localhost','root',passwd.passwd(),'3306','cine_paraiso')
         self.product = connection_SQL.product('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
         self.membership = connection_SQL.membership('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+
+        self.font_title = customtkinter.CTkFont(family="Arial", size=30, weight="bold", slant="italic")
+        self.font_id = customtkinter.CTkFont(family="Arial", size=16, weight="bold", slant="italic")
     
     def status_btn_Menu(self,status):
         self.btn_employee.configure(state=status)
@@ -262,10 +263,77 @@ class Menu:
         status_btn('disabled')
 
     def Membership(self):
-        self.band_membership = True
         self.status_btn_Menu('disabled')
-        frame_membership = customtkinter.CTkFrame(self.windows, width=670, height=430)
+        frame_membership = customtkinter.CTkFrame(self.windows, width=600, height=430)
         frame_membership.place(x=120, y=10)
+
+        frame_button = customtkinter.CTkFrame(frame_membership, width=580, height=80)
+        frame_button.place(x=10, y=25)
+
+        def table():
+            global frame_table, table_Membership
+
+            frame_table = customtkinter.CTkFrame(frame_membership, width=580, height=300)
+            frame_table.place(x=10, y=120)
+            
+            table_Membership = ttk.Treeview(frame_table, columns=(
+                'col1', 'col2', 'col3', 'col4'))
+            table_Membership.column('#0', width=100)
+            table_Membership.column('col1', width=90)
+            table_Membership.column('col2', width=120)
+            table_Membership.column('col3', width=120)
+            table_Membership.column('col4', width=100)
+
+            table_Membership.heading('#0', text='ID')
+            table_Membership.heading('col1', text='Nombre')
+            table_Membership.heading('col2', text='Correo')
+            table_Membership.heading('col3', text='Tipo')
+            table_Membership.heading('col4', text='Fecha Alta')
+
+            table_Membership.place(x=30, y=30, width=810, height=400)
+
+            add_table()
+
+        def form(id,option):
+            global frame_form, txt_name, txt_email, cmb_type
+            frame_table.destroy()
+
+            frame_form = customtkinter.CTkFrame(
+                frame_membership, width=580, height=300)
+            frame_form.place(x=10, y=120)
+
+            lbl_form = customtkinter.CTkLabel(frame_form, text=f"{option}", font=self.font_title)
+            lbl_form.place(x=50, y=20)
+
+            lbl_id = customtkinter.CTkLabel(frame_form, text=f"ID: {id}", font=self.font_id)
+            lbl_id.place(x=50, y=80)
+
+            lbl_name = customtkinter.CTkLabel(frame_form, text="Nombre")
+            lbl_name.place(x=50, y=120)
+            txt_name = customtkinter.CTkEntry(frame_form, width=140)
+            txt_name.place(x=110, y=120)
+
+            lbl_email = customtkinter.CTkLabel(frame_form, text="correo")
+            lbl_email.place(x=50, y=160)
+            txt_email = customtkinter.CTkEntry(frame_form, width=240)
+            txt_email.place(x=110, y=160)
+
+            lbl_type = customtkinter.CTkLabel(frame_form, text="Tipo")
+            lbl_type.place(x=50, y=200)
+            cmb_type = customtkinter.CTkComboBox(
+                frame_form, values=["SLV", "GLD", "PLT"], width=100)
+            cmb_type.place(x=110, y=200)
+            cmb_type.set("")
+
+            btn_save = customtkinter.CTkButton(
+                frame_form, text="Guardar", width=100, fg_color="GREEN", command=Save)
+            btn_save.place(x=140, y=240)
+
+            btn_cancel = customtkinter.CTkButton(
+                frame_form, text="Cancelar", width=100, fg_color="RED", command=Cancel)
+            btn_cancel.place(x=260, y=240)
+
+            status_btn('disabled')
 
         def add_table():
             membership = self.membership.Select_all('*', 'membresia')
@@ -273,27 +341,7 @@ class Menu:
                 table_Membership.insert("", customtkinter.END, text=count[1], values=[
                     count[2], count[3], count[4], count[5], count[6]])
 
-        def clear_table():
-            register = table_Membership.get_children()
-            for count_register in register:
-                table_Membership.delete(count_register)
-
-        def clean_txt():
-            txt_id.delete(0, customtkinter.END)
-            txt_name.delete(0, customtkinter.END)
-            txt_email.delete(0, customtkinter.END)
-            cmb_type.set('')
-
-        def status_txt(status):
-            cmb_type.configure(state=status)
-            txt_name.configure(state=status)
-            txt_email.configure(state=status)
-
         def status_btn(status):
-            btn_save.configure(state=status)
-            btn_cancel.configure(state=status)
-
-        def status_btn_add(status):
             btn_add.configure(state=status)
             btn_modifier.configure(state=status)
             btn_leave.configure(state=status)
@@ -303,38 +351,22 @@ class Menu:
             self.status_btn_Menu('normal')
 
         def Add():
-            self.band_employee = True
-            id = len(self.employee.Select_all('*', 'empleado')) + 1
-
-            txt_id.configure(state='normal')
-            txt_id.insert(0, id)
-            txt_id.configure(state='disabled')
-
-            status_txt('normal')
-            status_btn_add('disabled')
-            status_btn('normal')
+            id = len(self.membership.Select_all('*', 'membresia')) + 1
+            form(id,'Agregar')
 
         def Modifier():
-            self.band_membership = False
             select = table_Membership.focus()
             key = table_Membership.item(select, 'text')
 
             if key == "":
                 messagebox.showwarning("Modificar", "Selecciona un elemento")
             else:
-                status_txt('normal')
+                form(key, 'Modificar')
                 value = table_Membership.item(select, 'values')
 
-                txt_id.configure(state='normal')
-
-                txt_id.insert(0, key)
                 txt_name.insert(0, value[0])
                 txt_email.insert(0, value[1])
                 cmb_type.set(value[2])
-
-                txt_id.configure(state='disabled')
-                status_btn_add('disabled')
-                status_btn('normal')
 
         def Leave():
             select = table_Membership.focus()
@@ -349,99 +381,49 @@ class Menu:
                 if option == 'yes':
                     self.membership.leave(key)
 
-        def Save():
-            if self.band_membership:
-                self.employee.Add(txt_id.get(), txt_name.get(), txt_email.get(), cmb_type.get())
+        def Save(id, option):
+            if option:
+                self.employee.Add(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo("Agregar", "Nuevo membresia agregada")
             else:
-                self.employee.modifier(txt_id.get(), txt_name.get(), txt_email.get(), cmb_type.get())
+                self.employee.modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
-            txt_id.configure(state='normal')
-            clean_txt()
-            txt_id.configure(state='disabled')
-            status_btn('disabled')
-            status_btn_add('normal')
-            status_txt('disabled')
-            clear_table()
-            add_table()
+            frame_form.destroy()
+            status_btn('normal')
+            table()
 
         def Cancel():
             option = messagebox.askokcancel(
-                'Cancelar', 'Seguro que quiere canccelar')
+                'Cancelar', 'Seguro que quiere cancelar')
             if option:
-                txt_id.configure(state='normal')
-                clean_txt()
-                txt_id.configure(state='disabled')
-                status_btn('disabled')
-                status_btn_add('normal')
-                status_txt('disabled')
+                frame_form.destroy()
+                status_btn('normal')
+                table()
 
-        lbl_id = customtkinter.CTkLabel(frame_membership, text="ID")
-        lbl_id.place(x=30, y=40)
-        txt_id = customtkinter.CTkEntry(frame_membership, width=50)
-        txt_id.place(x=50, y=40)
-
-        lbl_name = customtkinter.CTkLabel(frame_membership, text="Nombre")
-        lbl_name.place(x=30, y=80)
-        txt_name = customtkinter.CTkEntry(frame_membership, width=140)
-        txt_name.place(x=90, y=80)
-
-        lbl_email = customtkinter.CTkLabel(frame_membership, text="correo")
-        lbl_email.place(x=30, y=120)
-        txt_email = customtkinter.CTkEntry(frame_membership, width=240)
-        txt_email.place(x=90, y=120)
-
-        lbl_type = customtkinter.CTkLabel(frame_membership, text="Tipo")
-        lbl_type.place(x=30, y=160)
-        cmb_type = customtkinter.CTkComboBox(frame_membership, values=["SLV","GLD","PLT"] ,width=100)
-        cmb_type.place(x=90, y=160)
-        cmb_type.set("")
 
         btn_close = customtkinter.CTkButton(
             frame_membership, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
 
+        lbl_title = customtkinter.CTkLabel(frame_button, text="Membresias", font=self.font_title)
+        lbl_title.place(x=30, y=25)
+
+        img_add = files.open_image("Image\\add.png",(20,20))
         btn_add = customtkinter.CTkButton(
-            frame_membership, text="Agregar", width=70, height=40, fg_color="DARKBLUE", command=Add)
-        btn_add.place(x=500, y=80)
+            frame_button, text="",image=img_add ,width=30, height=30, fg_color="DARKBLUE", command=Add)
+        btn_add.place(x=440, y=25)
 
+        img_edit = files.open_image("Image\\edit.png",(20,20))
         btn_modifier = customtkinter.CTkButton(
-            frame_membership, text="Modificar", width=70, height=40, fg_color="DARKBLUE", command=Modifier)
-        btn_modifier.place(x=500, y=130)
+            frame_button, text="", image=img_edit, width=30, height=30, fg_color="DARKBLUE", command=Modifier)
+        btn_modifier.place(x=480, y=25)
 
+        img_delete = files.open_image("Image\\delete.png",(20,20))
         btn_leave = customtkinter.CTkButton(
-            frame_membership, text="Baja", width=70, height=40, fg_color="DARKBLUE", command=Leave)
-        btn_leave.place(x=500, y=180)
-
-        btn_save = customtkinter.CTkButton(
-            frame_membership, text="Guardar", width=100, fg_color="GREEN", command=Save)
-        btn_save.place(x=140, y=210)
-
-        btn_cancel = customtkinter.CTkButton(
-            frame_membership, text="Cancelar", width=100, fg_color="RED", command=Cancel)
-        btn_cancel.place(x=260, y=210)
-
-        table_Membership = ttk.Treeview(frame_membership, columns=(
-            'col1', 'col2', 'col3', 'col4'))
-        table_Membership.column('#0', width=100)
-        table_Membership.column('col1', width=90)
-        table_Membership.column('col2', width=120)
-        table_Membership.column('col3', width=120)
-        table_Membership.column('col4', width=100)
-
-        table_Membership.heading('#0', text='ID')
-        table_Membership.heading('col1', text='Nombre')
-        table_Membership.heading('col2', text='Correo')
-        table_Membership.heading('col3', text='Tipo')
-        table_Membership.heading('col4', text='Fecha Alta')
-
-        table_Membership.place(x=50, y=380, width=800)
-
-        add_table()
-
-        txt_id.configure(state='disabled')
-        status_txt('disabled')
-        status_btn('disabled')
+            frame_button, text="", image=img_delete, width=30, height=30, fg_color="DARKBLUE", command=Leave)
+        btn_leave.place(x=520, y=25)
+        
+        table()
 
     def Movie(self):
         pass
@@ -633,7 +615,7 @@ if __name__ == "__main__":
     ID = 1
 
     app = customtkinter.CTk()
-    app.geometry('800x450')
+    app.geometry('740x450')
     app.resizable(False,False)
     app.title('Cinema Paraiso')
 
