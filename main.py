@@ -278,11 +278,11 @@ class Menu:
             
             table_Membership = ttk.Treeview(frame_table, columns=(
                 'col1', 'col2', 'col3', 'col4'))
-            table_Membership.column('#0', width=100)
-            table_Membership.column('col1', width=90)
-            table_Membership.column('col2', width=120)
-            table_Membership.column('col3', width=120)
-            table_Membership.column('col4', width=100)
+            table_Membership.column('#0', width=50, anchor=customtkinter.CENTER)
+            table_Membership.column('col1', width=140, anchor=customtkinter.CENTER)
+            table_Membership.column('col2', width=120, anchor=customtkinter.CENTER)
+            table_Membership.column('col3', width=120, anchor=customtkinter.CENTER)
+            table_Membership.column('col4', width=100, anchor=customtkinter.CENTER)
 
             table_Membership.heading('#0', text='ID')
             table_Membership.heading('col1', text='Nombre')
@@ -338,8 +338,8 @@ class Menu:
         def add_table():
             membership = self.membership.Select_all('*', 'membresia')
             for count in membership:
-                table_Membership.insert("", customtkinter.END, text=count[1], values=[
-                    count[2], count[3], count[4], count[5], count[6]])
+                table_Membership.insert("", customtkinter.END, text=count[0], values=[
+                    count[1], count[2], count[3], count[4]])
 
         def status_btn(status):
             btn_add.configure(state=status)
