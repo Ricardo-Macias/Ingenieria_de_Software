@@ -326,7 +326,7 @@ class Menu:
             cmb_type.set("")
 
             btn_save = customtkinter.CTkButton(
-                frame_form, text="Guardar", width=100, fg_color="GREEN", command=Save)
+                frame_form, text="Guardar", width=100, fg_color="GREEN", command=lambda:Save(id,option))
             btn_save.place(x=140, y=240)
 
             btn_cancel = customtkinter.CTkButton(
@@ -382,11 +382,11 @@ class Menu:
                     self.membership.leave(key)
 
         def Save(id, option):
-            if option:
-                self.employee.Add(id, txt_name.get(), txt_email.get(), cmb_type.get())
+            if option == 'Agregar':
+                self.membership.Add(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo("Agregar", "Nuevo membresia agregada")
             else:
-                self.employee.modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
+                self.membership.modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
             frame_form.destroy()
             status_btn('normal')

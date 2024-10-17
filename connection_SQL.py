@@ -121,7 +121,7 @@ class membership(connect_DataBase):
     def Add(self,id, name, email, type):
         try:
             cursor = self.connection.cursor()
-            sql = f"INSERT INTO membresia(idmembresia, nombre, email, tipo, fecha_alta) VALUES({id}, '{name}', '{email}', '{type}', '{date.today()}');"
+            sql = f"INSERT INTO membresia(idmembresia, nombre, email, tipo, fecha_alta, puntos) VALUES({id}, '{name}', '{email}', '{type}', '{date.today()}', 0);"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
