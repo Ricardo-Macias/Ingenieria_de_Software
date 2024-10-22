@@ -156,8 +156,7 @@ class Menu:
                 value = table_Employee.item(select, 'values')
                 option = messagebox.askquestion('Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    id = self.employee.Select_one('idempleado','empleado','rfc',f"'{key}'")
-                    self.employee.leave(int(id[0]))
+                    self.employee.leave(key)
 
         def Save():
             if self.band_employee:
@@ -336,7 +335,7 @@ class Menu:
             status_btn('disabled')
 
         def add_table():
-            membership = self.membership.Select_all('*', 'membresia')
+            membership = self.membership.Select_one('*','membresia','fecha_baja','NULL')
             for count in membership:
                 table_Membership.insert("", customtkinter.END, text=count[0], values=[
                     count[1], count[2], count[3], count[4]])
@@ -351,7 +350,7 @@ class Menu:
             self.status_btn_Menu('normal')
 
         def Add():
-            id = len(self.membership.Select_all('*', 'membresia')) + 1
+            id = self.membership.last_id('idmembresia', 'membresia') + 1
             form(id,'Agregar')
 
         def Modifier():
@@ -380,6 +379,8 @@ class Menu:
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
                     self.membership.Leave(key)
+                    table_Membership.destroy()
+                    table()
 
         def Save(id, option):
             if option == 'Agregar':
