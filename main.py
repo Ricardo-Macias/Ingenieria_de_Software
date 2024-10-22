@@ -44,9 +44,9 @@ class Menu:
         self.btn_ticket = customtkinter.CTkButton(frame_Menu, text="Ticket", command=self.Ticket, width=80, height=40)
         self.btn_ticket.place(x=10, y=350)
 
-        self.employee = connection_SQL.employee('localhost','root',passwd.passwd(),'3306','cine_paraiso')
-        self.product = connection_SQL.product('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
-        self.membership = connection_SQL.membership('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+        self.employee_sql = connection_SQL.employee('localhost','root',passwd.passwd(),'3306','cine_paraiso')
+        self.product_sql = connection_SQL.product('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+        self.membership_sql = connection_SQL.membership('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
 
         self.font_title = customtkinter.CTkFont(family="Arial", size=30, weight="bold", slant="italic")
         self.font_id = customtkinter.CTkFont(family="Arial", size=16, weight="bold", slant="italic")
@@ -335,7 +335,7 @@ class Menu:
             status_btn('disabled')
 
         def add_table():
-            membership = self.membership.Select_one('*','membresia','fecha_baja','NULL')
+            membership = self.membership_sql.Select_one('*','membresia','fecha_baja','NULL')
             for count in membership:
                 table_Membership.insert("", customtkinter.END, text=count[0], values=[
                     count[1], count[2], count[3], count[4]])
@@ -350,7 +350,7 @@ class Menu:
             self.status_btn_Menu('normal')
 
         def Add():
-            id = self.membership.last_id('idmembresia', 'membresia') + 1
+            id = self.membership_sql.last_id('idmembresia', 'membresia') + 1
             form(id,'Agregar')
 
         def Modifier():
@@ -378,16 +378,16 @@ class Menu:
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.membership.Leave(key)
+                    self.membership_sql.Leave(key)
                     table_Membership.destroy()
                     table()
 
         def Save(id, option):
             if option == 'Agregar':
-                self.membership.Add(id, txt_name.get(), txt_email.get(), cmb_type.get())
+                self.membership_sql.Add(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo("Agregar", "Nuevo membresia agregada")
             else:
-                self.membership.Modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
+                self.membership_sql.Modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
             frame_form.destroy()
             status_btn('normal')
