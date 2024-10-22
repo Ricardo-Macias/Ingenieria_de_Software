@@ -361,8 +361,8 @@ class Menu:
             if key == "":
                 messagebox.showwarning("Modificar", "Selecciona un elemento")
             else:
-                form(key, 'Modificar')
                 value = table_Membership.item(select, 'values')
+                form(key, 'Modificar')
 
                 txt_name.insert(0, value[0])
                 txt_email.insert(0, value[1])
@@ -379,14 +379,14 @@ class Menu:
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.membership.leave(key)
+                    self.membership.Leave(key)
 
         def Save(id, option):
             if option == 'Agregar':
                 self.membership.Add(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo("Agregar", "Nuevo membresia agregada")
             else:
-                self.membership.modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
+                self.membership.Modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
             frame_form.destroy()
             status_btn('normal')
