@@ -13,9 +13,9 @@ class connect_DataBase:
     def Select_one(self,search,table,column,id_search):
         try:
             cursor = self.connection.cursor()
-            sql = f"SELECT {search} FROM {table} WHERE {column} = {id_search}"
+            sql = f"SELECT {search} FROM {table} WHERE {column} IS {id_search}"
             cursor.execute(sql)
-            data = cursor.fetchone()
+            data = cursor.fetchall()
         except Exception as Ex:
             print(Ex)
         finally:
@@ -53,7 +53,7 @@ class employee(connect_DataBase):
             cursor = self.connection.cursor()
             sql = f"INSERT INTO empleado(idempleado,rfc,nombre,correo,telefono,direccion,cargo,fecha_contratacion) VALUES ({id},'{rfc}','{name}','{email}',{phone},'{addres}','{post}','{date.today()}');"
             cursor.execute(sql)
-            self.conecction.commit()
+            self.connection.commit()
         except Exception as Ex:
             print(Ex)
         finally:
@@ -64,7 +64,7 @@ class employee(connect_DataBase):
             cursor = self.connection.cursor()
             sql = f"UPDATE empleado SET rfc = '{rfc}', nombre = '{name}', correo = '{email}', telefono = {phone}, direccion = '{addres}', cargo = '{post}' WHERE idempleado = {id};"
             cursor.execute(sql)
-            self.conecction.commit()
+            self.connection.commit()
         except Exception as Ex:
             print(Ex)
         finally:
@@ -75,12 +75,11 @@ class employee(connect_DataBase):
             cursor = self.connection.cursor()
             sql = f"UPDATE empleado SET fecha_baja = '{date.today()}' WHERE idempleado = {id};"
             cursor.execute(sql)
-            self.conecction.commit()
+            self.connection.commit()
         except Exception as Ex:
             print(Ex)
         finally:
             cursor.close()
-
 
 class product(connect_DataBase):
 
@@ -89,7 +88,7 @@ class product(connect_DataBase):
             cursor = self.connection.cursor()
             sql = f"INSERT INTO producto(idproducto,nombre,precio,stock) VALUES ({id}, '{name}', {price}, {stock});"
             cursor.execute(sql)
-            self.conecction.commit()
+            self.connection.commit()
         except Exception as Ex:
             print(Ex)
         finally:
@@ -100,7 +99,7 @@ class product(connect_DataBase):
             cursor = self.connection.cursor()
             sql = f"UPDATE producto SET nombre = '{name}', precio = {price}, stock = {stock} WHERE idproducto = {id};"
             cursor.execute(sql)
-            self.conecction.commit()
+            self.connection.commit()
         except Exception as Ex:
             print(Ex)
         finally:
@@ -111,7 +110,7 @@ class product(connect_DataBase):
             cursor = self.connection.cursor()
             sql = f"DELETE FROM producto WHERE idproducto = {id}"
             cursor.execute(sql)
-            self.conecction.commit()
+            self.connection.commit()
         except Exception as Ex:
             print(Ex)
         finally:
@@ -144,6 +143,43 @@ class membership(connect_DataBase):
         try:
             cursor = self.connection.cursor()
             sql = f"UPDATE membresia SET fecha_baja = '{date.today()}' WHERE idmembresia = {id};"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+
+class movie(connect_DataBase):
+
+    def Add(self, id, title, language, subtitles, synopsis, cast, poster, duration, genres):
+        try: 
+            cursor = self.connection.cursor()
+            sql = f'INSERT INTO pelicula(idpelicula, titulo, idioma, subtitulos, sinopsis, reparto, poster, duracion, generos ) VALUES 
+            ({id}, "{title}", "{language}", {subtitles}, "{synopsis}", "{cast}", "{poster}", {duration}, "{genres}");'
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+
+    def Modifier(self, id, title, language, subtitles, synopsis, cast, poster, duration, genres):
+        try:
+            cursor = self.connection.cursor()
+            sql = f"UPDATE pelicula SET titulo = '{title}', idima = '{language}', subtitulos = {subtitles}, sinopsis = '{synopsis}',
+            reparto = '{cast}', poster = '{poster}', duracion = {duration}, generos = '{genres}' WHERE idpelicula = {id};"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+
+    def Delete(self, id):
+        try:
+            cursor = self.connection.cursor()
+            sql = f"DELETE FROM pelicula WHERE idpelicula = {id}"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
