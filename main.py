@@ -411,38 +411,78 @@ class Menu:
         pass
 
     def Product(self):
-        self.band_product = True
         self.status_btn_Menu('disabled')
-        frame_product = customtkinter.CTkFrame(self.windows,width=670,height=430)
-        frame_product.place(x=120,y=10)
+        frame_product = customtkinter.CTkFrame(self.windows, width=600, height=430)
+        frame_product.place(x=120, y=10)
+
+        frame_button = customtkinter.CTkFrame(frame_product, width=580, height=80)
+        frame_button.place(x=10, y=25)
+
+        def table():
+            global frame_table, table_Product
+
+            frame_table = customtkinter.CTkFrame(frame_product, width=580, height=300)
+            frame_table.place(x=10, y=120)
+
+            table_Product = ttk.Treeview(frame_table, columns=('col1', 'col2', 'col3'))
+            table_Product.column('#0', width=50, anchor=customtkinter.CENTER)
+            table_Product.column('col1', width=140, anchor=customtkinter.CENTER)
+            table_Product.column('col2', width=120, anchor=customtkinter.CENTER)
+            table_Product.column('col3', width=120, anchor=customtkinter.CENTER)
+
+            table_Product.heading('#0', text='ID')
+            table_Product.heading('col1', text='Nombre')
+            table_Product.heading('col2', text='Precio')
+            table_Product.heading('col3', text='Stock')
+
+            table_Product.place(x=30, y=30, width=810, height=400)
+
+            add_table()
+
+        def form(id, option):
+            global txt_name, txt_price, txt_stock, frame_form
+
+            frame_table.destroy()
+
+            frame_form = customtkinter.CTkFrame(frame_product, width=580, height=300)
+            frame_form.place(x=10, y=120)
+
+            lbl_form = customtkinter.CTkLabel(frame_form, text=f"{option}", font=self.font_title)
+            lbl_form.place(x=50, y=20)
+
+            lbl_id = customtkinter.CTkLabel(frame_form, text=f"ID: {id}", font=self.font_id)
+            lbl_id.place(x=50, y=80)
+
+            lbl_name = customtkinter.CTkLabel(frame_form, text="Nombre")
+            lbl_name.place(x=50, y=120)
+            txt_name = customtkinter.CTkEntry(frame_form, width=240)
+            txt_name.place(x=110, y=120)
+
+            lbl_price = customtkinter.CTkLabel(frame_form, text="Precio")
+            lbl_price.place(x=50, y=160)
+            txt_price = customtkinter.CTkEntry(frame_form, width=120)
+            txt_price.place(x=110, y=160)
+
+            lbl_stock = customtkinter.CTkLabel(frame_form, text="Stock")
+            lbl_stock.place(x=50, y=200)
+            txt_stock = customtkinter.CTkEntry(frame_form, width=120)
+            txt_stock.place(x=110, y=200)
+
+            btn_save = customtkinter.CTkButton(frame_form, text="Guardar", width=100, fg_color="GREEN", command=lambda: Save(id, option))
+            btn_save.place(x=140, y=240)
+
+            btn_cancel = customtkinter.CTkButton(frame_form, text="Cancelar", width=100, fg_color="RED", command=Cancel)
+            btn_cancel.place(x=260, y=240)
+
+            status_btn('disabled')
 
         def add_table():
-            product = self.product.Select_all('*','producto')
+            product = self.product_sql.Select_all('*','producto')
             for count in product:
-                table_product.insert("", customtkinter.END, text=count[0], values=[
-                             count[1], count[2], count[3]])
-        
-        def clear_table():
-            register = table_product.get_children()
-            for count_register in register:
-                table_product.delete(count_register)
-
-        def clean_txt():
-            txt_id.delete(0,customtkinter.END)
-            txt_product.delete(0,customtkinter.END)
-            txt_price.delete(0,customtkinter.END)
-            txt_stock.delete(0,customtkinter.END)
-
-        def status_txt(status):
-            txt_product.configure(state=status)
-            txt_price.configure(state=status)
-            txt_stock.configure(state=status)
+                table_Product.insert("", customtkinter.END, text=count[0], values=[
+                    count[1], count[2], count[3]])
 
         def status_btn(status):
-            btn_save.configure(state=status)
-            btn_cancel.configure(state=status)
-
-        def status_btn_add(status):
             btn_add.configure(state=status)
             btn_modifier.configure(state=status)
             btn_leave.configure(state=status)
@@ -450,138 +490,79 @@ class Menu:
         def close():
             frame_product.destroy()
             self.status_btn_Menu('normal')
-        
+
         def Add():
-            self.band_product = True
-            id = self.product.last_id('idproducto','producto') + 1
-
-            txt_id.configure(state='normal')
-            txt_id.insert(0,id)
-            txt_id.configure(state='disabled')
-
-            status_txt('normal')
-            status_btn_add('disabled')
-            status_btn('normal')
+            id = self.product_sql.last_id('idproducto', 'producto') + 1
+            form(id, 'Agregar')
 
         def Modifier():
-            self.band_product = False
-            select = table_product.focus()
-            key = table_product.item(select, 'text')
+            select = table_Product.focus()
+            key = table_Product.item(select, 'text')
 
             if key == "":
                 messagebox.showwarning("Modificar", "Selecciona un elemento")
             else:
-                status_txt('normal')
-                value = table_product.item(select, 'values')
+                value = table_Product.item(select, 'values')
+                form(key, 'Modificar')
 
-                txt_id.configure(state='normal')
-
-                txt_id.insert(0, key)
-                txt_product.insert(0, value[0])
+                txt_name.insert(0, value[0])
                 txt_price.insert(0, value[1])
-                txt_stock.insert(0, value[2])
-
-                txt_id.configure(state='disabled')
-                status_btn_add('disabled')
-                status_btn('normal')
+                txt_stock.insert(0,value[2])
 
         def Leave():
-            select = table_product.focus()
-            key = table_product.item(select, 'text')
+            select = table_Product.focus()
+            key = table_Product.item(select, 'text')
 
             if key == "":
                 messagebox.showwarning("Baja", "Selecciona un elemento")
             else:
-                value = table_product.item(select, 'values')
-                option = messagebox.askquestion('Baja', f'Seguro de querer eliminar el producto {value[0]}')
+                value = table_Product.item(select, 'values')
+                option = messagebox.askquestion(
+                    'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.product.Delete(key)
-                    clear_table()
-                    add_table()
+                    self.product_sql.Delete(key)
+                    table_Product.destroy()
+                    table()
 
-        def Save():
-            if self.band_product:
-                self.product.Add(txt_id.get(),txt_product.get(),txt_price.get(),txt_stock.get())
-                messagebox.showinfo("Agregar","Nuevo producto agregado")
+        def Save(id, option):
+            if option == 'Agregar':
+                self.product_sql.Add(id, txt_name.get(), txt_price.get(), txt_stock.get())
+                messagebox.showinfo("Agregar", "Nuevo membresia agregada")
             else:
-                self.product.Modifier(txt_id.get(), txt_product.get(), txt_price.get(), txt_stock.get())
-                messagebox.showinfo('Modificar','Se modificaron los datos del producto')
-            txt_id.configure(state='normal')
-            clean_txt()
-            txt_id.configure(state='disabled')
-            status_btn('disabled')
-            status_btn_add('normal')
-            status_txt('disabled')
-            clear_table()
-            add_table()
+                self.product_sql.Modifier(id, txt_name.get(), txt_price.get(), txt_stock.get())
+                messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
+            frame_form.destroy()
+            status_btn('normal')
+            table()
 
         def Cancel():
-            option = messagebox.askokcancel('Cancelar','Seguro que quiere canccelar')
+            option = messagebox.askokcancel(
+                'Cancelar', 'Seguro que quiere cancelar')
             if option:
-                txt_id.configure(state='normal')
-                clean_txt()
-                txt_id.configure(state='disabled')
-                status_btn('disabled')
-                status_btn_add('normal')
-                status_txt('disabled')
+                frame_form.destroy()
+                status_btn('normal')
+                table()
 
-        lbl_id = customtkinter.CTkLabel(frame_product,text="ID")
-        lbl_id.place(x=50, y=40)
-        txt_id = customtkinter.CTkEntry(frame_product, width=50)
-        txt_id.place(x=70,y=40)
+        btn_close = customtkinter.CTkButton(frame_product, width=10, height=10, text="X", fg_color="RED", command=close)
+        btn_close.place(x=0, y=0)
 
-        lbl_product = customtkinter.CTkLabel(frame_product,text="Producto")
-        lbl_product.place(x=50, y=80)
-        txt_product = customtkinter.CTkEntry(frame_product,width=140)
-        txt_product.place(x=120,y=80)
+        lbl_title = customtkinter.CTkLabel(frame_button, text="Productos", font=self.font_title)
+        lbl_title.place(x=30, y=25)
 
-        lbl_price = customtkinter.CTkLabel(frame_product, text="Precio")
-        lbl_price.place(x=50,y=120)
-        txt_price = customtkinter.CTkEntry(frame_product,width=50)
-        txt_price.place(x=120,y=120)
+        img_add = files.open_image("Image\\add.png", (20, 20))
+        btn_add = customtkinter.CTkButton(frame_button, text="", image=img_add, width=30, height=30, fg_color="DARKBLUE", command=Add)
+        btn_add.place(x=440, y=25)
 
-        lbl_stock = customtkinter.CTkLabel(frame_product,text="Stock")
-        lbl_stock.place(x=50, y=160)
-        txt_stock = customtkinter.CTkEntry(frame_product, width=50)
-        txt_stock.place(x=120,y=160)
+        img_edit = files.open_image("Image\\edit.png", (20, 20))
+        btn_modifier = customtkinter.CTkButton(frame_button, text="", image=img_edit, width=30, height=30, fg_color="DARKBLUE", command=Modifier)
+        btn_modifier.place(x=480, y=25)
 
-        btn_close = customtkinter.CTkButton(frame_product,width=10,height=10,text="X",fg_color="RED",command=close)
-        btn_close.place(x=0,y=0)
+        img_delete = files.open_image("Image\\delete.png", (20, 20))
+        btn_leave = customtkinter.CTkButton(frame_button, text="", image=img_delete, width=30, height=30, fg_color="DARKBLUE", command=Leave)
+        btn_leave.place(x=520, y=25)
 
-        btn_add = customtkinter.CTkButton(frame_product, text="Agregar", width=70, height=40, fg_color="DARKBLUE", command=Add)
-        btn_add.place(x=400,y=80)
-
-        btn_modifier = customtkinter.CTkButton(frame_product, text="Modificar", width=70, height=40, fg_color="DARKBLUE", command=Modifier)
-        btn_modifier.place(x=400,y=130)
-
-        btn_leave = customtkinter.CTkButton(frame_product, text="Borrar",width=70, height=40,fg_color="DARKBLUE", command=Leave)
-        btn_leave.place(x=400,y=180)
-
-        btn_save = customtkinter.CTkButton(frame_product,text="Guardar",width=100,fg_color="GREEN",command=Save)
-        btn_save.place(x=250,y=130)
-
-        btn_cancel = customtkinter.CTkButton(frame_product,text="Cancelar",width=100,fg_color="RED",command=Cancel)
-        btn_cancel.place(x=250,y=170)
-
-        table_product = ttk.Treeview(frame_product,columns=('col1','col2','col3'))
-        table_product.column('#0',width=100)
-        table_product.column('col1',width=90)
-        table_product.column('col2',width=120)
-        table_product.column('col3',width=120)
-
-        table_product.heading('#0',text='ID')
-        table_product.heading('col1',text='Producto')
-        table_product.heading('col2', text='Precio')
-        table_product.heading('col3',text='Stock')
-
-        table_product.place(x=50, y=380,width=800)
-
-        add_table()
-
-        txt_id.configure(state='disabled')
-        status_txt('disabled')
-        status_btn('disabled')
-
+        table()
+        
     def Showing(self):
         pass
 
