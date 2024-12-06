@@ -44,7 +44,7 @@ class connect_DataBase:
             print(Ex)
         finally:
             cursor.close()
-            return data[0]
+            return 0 if data[0] == None else data[0]
 
 class employee(connect_DataBase):
 
@@ -155,8 +155,7 @@ class movie(connect_DataBase):
     def Add(self, id, title, language, subtitles, synopsis, cast, poster, duration, genres):
         try: 
             cursor = self.connection.cursor()
-            sql = f'INSERT INTO pelicula(idpelicula, titulo, idioma, subtitulos, sinopsis, reparto, poster, duracion, generos ) VALUES 
-            ({id}, "{title}", "{language}", {subtitles}, "{synopsis}", "{cast}", "{poster}", {duration}, "{genres}");'
+            sql = f'INSERT INTO pelicula(idpelicula, titulo, idioma, subtitulos, sinopsis, reparto, poster, duracion, generos ) VALUES ({id}, "{title}", "{language}", {subtitles}, "{synopsis}", "{cast}", "{poster}", {duration}, "{genres}");'
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
@@ -167,8 +166,7 @@ class movie(connect_DataBase):
     def Modifier(self, id, title, language, subtitles, synopsis, cast, poster, duration, genres):
         try:
             cursor = self.connection.cursor()
-            sql = f"UPDATE pelicula SET titulo = '{title}', idima = '{language}', subtitulos = {subtitles}, sinopsis = '{synopsis}',
-            reparto = '{cast}', poster = '{poster}', duracion = {duration}, generos = '{genres}' WHERE idpelicula = {id};"
+            sql = f"UPDATE pelicula SET titulo = '{title}', idima = '{language}', subtitulos = {subtitles}, sinopsis = '{synopsis}',reparto = '{cast}', poster = '{poster}', duracion = {duration}, generos = '{genres}' WHERE idpelicula = {id};"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
