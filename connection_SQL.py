@@ -166,7 +166,7 @@ class movie(connect_DataBase):
     def Modifier(self, id, title, language, subtitles, synopsis, cast, poster, duration, genres):
         try:
             cursor = self.connection.cursor()
-            sql = f"UPDATE pelicula SET titulo = '{title}', idima = '{language}', subtitulos = {subtitles}, sinopsis = '{synopsis}',reparto = '{cast}', poster = '{poster}', duracion = {duration}, generos = '{genres}' WHERE idpelicula = {id};"
+            sql = f"UPDATE pelicula SET titulo = '{title}', idioma = '{language}', subtitulos = {subtitles}, sinopsis = '{synopsis}',reparto = '{cast}', poster = '{poster}', duracion = {duration}, generos = '{genres}' WHERE idpelicula = {id};"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
