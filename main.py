@@ -1,9 +1,9 @@
 import customtkinter
 from tkinter import messagebox, ttk
 
+from file_explorer import image_explorer
 import connection_SQL
 import passwd
-import files
 
 class Menu:
     def __init__(self,windows,user,ID):
@@ -11,14 +11,16 @@ class Menu:
         self.user = user
         self.ID = ID
 
-        img_2 = files.open_image("Image\\Img_sala.jpg",(740, 450))
+        self.image = image_explorer()
+
+        img_2 = self.image.open_image("Image\\Img_sala.jpg",(740, 450))
         lbl_fondo = customtkinter.CTkLabel(self.windows, image=img_2, text='',)
         lbl_fondo.place(x=0, y=0)
 
         frame_Menu = customtkinter.CTkFrame(self.windows, width=100, height=430)
         frame_Menu.place(x=10,y=10)
 
-        img = files.open_image("Image\\user-login.png",(50,50))
+        img = self.image.open_image("Image\\user-login.png",(50,50))
         lbl_image = customtkinter.CTkLabel(frame_Menu, image=img, text='')
         lbl_image.place(x=25, y=10)
         lbl_user = customtkinter.CTkLabel(frame_Menu,text=self.user,width=80)
@@ -47,6 +49,7 @@ class Menu:
         self.employee_sql = connection_SQL.employee('localhost','root',passwd.passwd(),'3306','cine_paraiso')
         self.product_sql = connection_SQL.product('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
         self.membership_sql = connection_SQL.membership('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+        self.movie_sql = connection_SQL.movie('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
 
         self.font_title = customtkinter.CTkFont(family="Arial", size=30, weight="bold", slant="italic")
         self.font_id = customtkinter.CTkFont(family="Arial", size=16, weight="bold", slant="italic")
@@ -408,7 +411,220 @@ class Menu:
         table()
 
     def Movie(self):
-        pass
+        self.status_btn_Menu('disabled')
+        frame_movie = customtkinter.CTkFrame(
+            self.windows, width=600, height=430)
+        frame_movie.place(x=120, y=10)
+
+        frame_button = customtkinter.CTkFrame(
+            frame_movie, width=580, height=80)
+        frame_button.place(x=10, y=25)
+
+        def table():
+
+            global frame_table, table_movie
+
+            frame_table = customtkinter.CTkFrame(
+                frame_movie, width=580, height=300)
+            frame_table.place(x=10, y=120)
+
+            table_movie = ttk.Treeview(frame_table, columns=(
+                'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8'))
+            table_movie.column('#0', width=50, anchor=customtkinter.CENTER)
+            table_movie.column('col1', width=100, anchor=customtkinter.CENTER)
+            table_movie.column('col2', width=140, anchor=customtkinter.CENTER)
+            table_movie.column('col3', width=120, anchor=customtkinter.CENTER)
+            table_movie.column('col4', width=120, anchor=customtkinter.CENTER)
+            table_movie.column('col5', width=100, anchor=customtkinter.CENTER)
+            table_movie.column('col6', width=50, anchor=customtkinter.CENTER)
+            table_movie.column('col7', width=50, anchor=customtkinter.CENTER)
+            table_movie.column('col8', width=50, anchor=customtkinter.CENTER)
+
+            table_movie.heading('#0', text='id')
+            table_movie.heading('col1', text='Titulo')
+            table_movie.heading('col2', text='Idioma')
+            table_movie.heading('col3', text='Subtitulos')
+            table_movie.heading('col4', text='Sinopsis')
+            table_movie.heading('col5', text='Reparto')
+            table_movie.heading('col6', text='Poster')
+            table_movie.heading('col7', text='Duracion')
+            table_movie.heading('col8', text='Generos')
+
+            table_movie.place(x=30, y=30, width=810, height=400)
+
+            add_table()
+
+        def form(id, option):
+            global frame_form, txt_title, cmb_languages, chk_subtitles, btn_poster, txt_duraction, txt_genres
+            frame_table.destroy()
+
+            frame_form = customtkinter.CTkFrame(
+                frame_movie, width=580, height=300)
+            frame_form.place(x=10, y=120)
+
+            lbl_form = customtkinter.CTkLabel(
+                frame_form, text=f"{option}", font=self.font_title)
+            lbl_form.place(x=50, y=10)
+
+            lbl_id = customtkinter.CTkLabel(
+                frame_form, text=f"ID: {id}", font=self.font_id)
+            lbl_id.place(x=50, y=50)
+
+            lbl_title = customtkinter.CTkLabel(frame_form, text="Titulo")
+            lbl_title.place(x=50, y=85)
+            txt_title = customtkinter.CTkEntry(frame_form, width=180)
+            txt_title.place(x=110, y=85)
+
+            lbl_languages = customtkinter.CTkLabel(frame_form, text="Idioma")
+            lbl_languages.place(x=50, y=120)
+            cmb_languages = customtkinter.CTkComboBox(frame_form, values=['ENG','ESP'],width=70)
+            cmb_languages.place(x=110, y=120)
+
+            chk_subtitles = customtkinter.CTkCheckBox(frame_form, text="Subtitulos")
+            chk_subtitles.place(x=190, y=120)
+
+            """
+            lbl_synopsis = customtkinter.CTkLabel(frame_form, text="sinopsis")
+            lbl_synopsis.place(x=50, y=155)
+            txt_synopsis = customtkinter.CTkTextbox(frame_form, width=240)
+            txt_synopsis.place(x=110, y=155)
+            
+            lbl_cast = customtkinter.CTkLabel(frame_form, text="Reparto")
+            lbl_cast.place(x=50, y=225)
+            txt_cast = customtkinter.CTkEntry(frame_form, width=150)
+            txt_cast.place(x=110, y=225)
+            """
+
+            lbl_poster = customtkinter.CTkLabel(frame_form, text="Poster")
+            lbl_poster.place(x=270, y=260)
+            btn_poster = customtkinter.CTkButton(frame_form,text="Poster", command=self.image.setimage_explorer)
+            btn_poster.place(x=320, y=260)
+
+            lbl_duration = customtkinter.CTkLabel(frame_form, text="Duracion")
+            lbl_duration.place(x=50, y=155)
+            entry_var = customtkinter.IntVar()
+            txt_duraction = customtkinter.CTkEntry(frame_form,textvariable=entry_var ,width=100)
+            txt_duraction.place(x=110, y=155)
+
+            lbl_genres = customtkinter.CTkLabel(frame_form, text="Generos")
+            lbl_genres.place(x=50,y=190)
+            txt_genres = customtkinter.CTkEntry(frame_form, width=100)
+            txt_genres.place(x=110,y=190)
+
+            btn_save = customtkinter.CTkButton(
+                frame_form, text="Guardar", width=100, fg_color="GREEN", command=lambda: Save(id, option))
+            btn_save.place(x=140, y=260)
+
+            btn_cancel = customtkinter.CTkButton(
+                frame_form, text="Cancelar", width=100, fg_color="RED", command=Cancel)
+            btn_cancel.place(x=260, y=260)
+
+            status_btn('disabled')
+
+        def add_table():
+            movie = self.movie_sql.Select_all(
+                '*', 'pelicula')
+            for count in movie:
+                table_movie.insert("", customtkinter.END, text=count[0], values=[
+                    count[1], count[2], count[3], count[4], count[5], count[6], count[7], count[8]])
+
+        def status_btn(status):
+            btn_add.configure(state=status)
+            btn_modifier.configure(state=status)
+            btn_leave.configure(state=status)
+
+        def close():
+            frame_movie.destroy()
+            self.status_btn_Menu('normal')
+
+        def Add():
+            id = self.movie_sql.last_id('idpelicula','pelicula') + 1
+            form(id, 'Agregar')
+
+        def Modifier():
+            select = table_movie.focus()
+            key = table_movie.item(select, 'text')
+
+            if key == "":
+                messagebox.showwarning("Modificar", "Selecciona un elemento")
+            else:
+                value = table_movie.item(select, 'values')
+                form(key, 'Modificar')
+
+                txt_title.insert(0, value[0])
+                cmb_languages.set( value[1])
+                if value[2] == '1':
+                    chk_subtitles.select(1)
+                else:
+                    chk_subtitles.deselect(0)
+                
+                #txt_synopsis.insert(0, value[3])
+                #txt_cast.insert(0, value[4])
+                #btn_poster.set(value[5])
+                txt_duraction.insert(0,value[6])
+                txt_genres.insert(0,value[7])
+
+        def Leave():
+            select = table_movie.focus()
+            key = table_movie.item(select, 'text')
+
+            if key == "":
+                messagebox.showwarning("Baja", "Selecciona un elemento")
+            else:
+                value = table_movie.item(select, 'values')
+                option = messagebox.askquestion(
+                    'Baja', f'Dar de baja a {value[0]}')
+                if option == 'yes':
+                    self.movie_sql.Delete(key)
+                    table_movie.destroy()
+                    table()
+
+        def Save(id, option):
+            if option == 'Agregar':
+                self.movie_sql.Add(
+                    id, txt_title.get(), cmb_languages.get(), chk_subtitles.get(),'NULL','NULL', self.image.getimage_explorer(),txt_duraction.get(),txt_genres.get())
+                messagebox.showinfo("Agregar", "Nuevo pelicula agregada")
+            else:
+                self.movie_sql.Modifier(
+                    id, txt_title.get(), cmb_languages.get(), chk_subtitles.get(), 'NULL', 'NULL', self.image.getimage_explorer(), txt_duraction.get(), txt_genres.get())
+                messagebox.showinfo(
+                    'Modificar', 'Se modificaron los datos de la Pelicula')
+            frame_form.destroy()
+            status_btn('normal')
+            table()
+
+        def Cancel():
+            option = messagebox.askokcancel(
+                'Cancelar', 'Seguro que quiere cancelar')
+            if option:
+                frame_form.destroy()
+                status_btn('normal')
+                table()
+
+        btn_close = customtkinter.CTkButton(
+            frame_movie, width=10, height=10, text="X", fg_color="RED", command=close)
+        btn_close.place(x=0, y=0)
+
+        lbl_title = customtkinter.CTkLabel(
+            frame_button, text="Peliculas", font=self.font_title)
+        lbl_title.place(x=30, y=25)
+
+        img_add = self.image.open_image("Image\\add.png", (20, 20))
+        btn_add = customtkinter.CTkButton(
+            frame_button, text="", image=img_add, width=30, height=30, fg_color="DARKBLUE", command=Add)
+        btn_add.place(x=440, y=25)
+
+        img_edit = self.image.open_image("Image\\edit.png", (20, 20))
+        btn_modifier = customtkinter.CTkButton(
+            frame_button, text="", image=img_edit, width=30, height=30, fg_color="DARKBLUE", command=Modifier)
+        btn_modifier.place(x=480, y=25)
+
+        img_delete = self.image.open_image("Image\\delete.png", (20, 20))
+        btn_leave = customtkinter.CTkButton(
+            frame_button, text="", image=img_delete, width=30, height=30, fg_color="DARKBLUE", command=Leave)
+        btn_leave.place(x=520, y=25)
+
+        table()
 
     def Product(self):
         self.status_btn_Menu('disabled')
