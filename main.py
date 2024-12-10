@@ -62,6 +62,30 @@ class Menu:
         self.btn_showing.configure(state=status)
         self.btn_ticket.configure(state=status)
 
+    def create_btn_add_edit_delete(self,frame,title,add_function, modifier_function, leave_function):
+        lbl_title = customtkinter.CTkLabel(
+            frame, text=f"{title}", font=self.font_title)
+        lbl_title.place(x=30, y=25)
+
+        img_add = self.image.open_image("Image\\add.png", (20, 20))
+        self.btn_add = customtkinter.CTkButton(
+            frame, text="", image=img_add, width=30, height=30, fg_color="DARKBLUE", command=add_function)
+        self.btn_add.place(x=440, y=25)
+
+        img_edit = self.image.open_image("Image\\edit.png", (20, 20))
+        self.btn_modifier = customtkinter.CTkButton(
+            frame, text="", image=img_edit, width=30, height=30, fg_color="DARKBLUE", command=modifier_function)
+        self.btn_modifier.place(x=480, y=25)
+
+        img_delete = self.image.open_image("Image\\delete.png", (20, 20))
+        self.btn_leave = customtkinter.CTkButton(
+            frame, text="", image=img_delete, width=30, height=30, fg_color="DARKBLUE", command=leave_function)
+        self.btn_leave.place(x=520, y=25)
+
+    def status_btn_add_modifier_delete(self,status):
+        self.btn_add.configure(state=status)
+        self.btn_modifier.configure(state=status)
+        self.btn_leave.configure(state=status)
     
     def Employee(self):
         self.status_btn_Menu('disabled')
@@ -151,18 +175,13 @@ class Menu:
                 frame_form, text="Cancelar", width=100, fg_color="RED", command=Cancel)
             btn_cancel.place(x=260, y=260)
 
-            status_btn('disabled')
+            self.status_btn_add_modifier_delete('disabled')
 
         def add_table():
             employee = self.employee_sql.Select_one('*', 'empleado', 'fecha_baja', 'NULL')
             for count in employee:
                 table_Employee.insert("", customtkinter.END, text=count[0], values=[
                     count[1], count[2], count[3], count[4], count[5], count[6]])
-
-        def status_btn(status):
-            btn_add.configure(state=status)
-            btn_modifier.configure(state=status)
-            btn_leave.configure(state=status)
 
         def close():
             frame_employee.destroy()
@@ -214,7 +233,7 @@ class Menu:
                 messagebox.showinfo(
                     'Modificar', 'Se modificaron los datos de la membresia')
             frame_form.destroy()
-            status_btn('normal')
+            self.status_btn_add_modifier_delete('normal')
             table()
 
         def Cancel():
@@ -222,27 +241,13 @@ class Menu:
                 'Cancelar', 'Seguro que quiere cancelar')
             if option:
                 frame_form.destroy()
-                status_btn('normal')
+                self.status_btn_add_modifier_delete('normal')
                 table()
 
         btn_close = customtkinter.CTkButton(frame_employee, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
 
-        lbl_title = customtkinter.CTkLabel(frame_button, text="Empleados", font=self.font_title)
-        lbl_title.place(x=30, y=25)
-
-        img_add = files.open_image("Image\\add.png", (20, 20))
-        btn_add = customtkinter.CTkButton(frame_button, text="", image=img_add, width=30, height=30, fg_color="DARKBLUE", command=Add)
-        btn_add.place(x=440, y=25)
-
-        img_edit = files.open_image("Image\\edit.png", (20, 20))
-        btn_modifier = customtkinter.CTkButton(frame_button, text="", image=img_edit, width=30, height=30, fg_color="DARKBLUE", command=Modifier)
-        btn_modifier.place(x=480, y=25)
-
-        img_delete = files.open_image("Image\\delete.png", (20, 20))
-        btn_leave = customtkinter.CTkButton(frame_button, text="", image=img_delete, width=30, height=30, fg_color="DARKBLUE", command=Leave)
-        btn_leave.place(x=520, y=25)
-
+        self.create_btn_add_edit_delete(frame_button, "Empleado", Add, Modifier, Leave)
         table()
 
     def Membership(self):
@@ -316,18 +321,13 @@ class Menu:
                 frame_form, text="Cancelar", width=100, fg_color="RED", command=Cancel)
             btn_cancel.place(x=260, y=240)
 
-            status_btn('disabled')
+            self.status_btn_add_modifier_delete('disabled')
 
         def add_table():
             membership = self.membership_sql.Select_one('*','membresia','fecha_baja','NULL')
             for count in membership:
                 table_Membership.insert("", customtkinter.END, text=count[0], values=[
                     count[1], count[2], count[3], count[4]])
-
-        def status_btn(status):
-            btn_add.configure(state=status)
-            btn_modifier.configure(state=status)
-            btn_leave.configure(state=status)
 
         def close():
             frame_membership.destroy()
@@ -374,7 +374,7 @@ class Menu:
                 self.membership_sql.Modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
             frame_form.destroy()
-            status_btn('normal')
+            self.status_btn_add_modifier_delete('normal')
             table()
 
         def Cancel():
@@ -382,32 +382,14 @@ class Menu:
                 'Cancelar', 'Seguro que quiere cancelar')
             if option:
                 frame_form.destroy()
-                status_btn('normal')
+                self.status_btn_add_modifier_delete('normal')
                 table()
-
 
         btn_close = customtkinter.CTkButton(
             frame_membership, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
-
-        lbl_title = customtkinter.CTkLabel(frame_button, text="Membresias", font=self.font_title)
-        lbl_title.place(x=30, y=25)
-
-        img_add = files.open_image("Image\\add.png",(20,20))
-        btn_add = customtkinter.CTkButton(
-            frame_button, text="",image=img_add ,width=30, height=30, fg_color="DARKBLUE", command=Add)
-        btn_add.place(x=440, y=25)
-
-        img_edit = files.open_image("Image\\edit.png",(20,20))
-        btn_modifier = customtkinter.CTkButton(
-            frame_button, text="", image=img_edit, width=30, height=30, fg_color="DARKBLUE", command=Modifier)
-        btn_modifier.place(x=480, y=25)
-
-        img_delete = files.open_image("Image\\delete.png",(20,20))
-        btn_leave = customtkinter.CTkButton(
-            frame_button, text="", image=img_delete, width=30, height=30, fg_color="DARKBLUE", command=Leave)
-        btn_leave.place(x=520, y=25)
         
+        self.create_btn_add_edit_delete(frame_button, "Membresias", Add, Modifier, Leave)
         table()
 
     def Movie(self):
@@ -421,7 +403,6 @@ class Menu:
         frame_button.place(x=10, y=25)
 
         def table():
-
             global frame_table, table_movie
 
             frame_table = customtkinter.CTkFrame(
@@ -519,7 +500,7 @@ class Menu:
                 frame_form, text="Cancelar", width=100, fg_color="RED", command=Cancel)
             btn_cancel.place(x=260, y=260)
 
-            status_btn('disabled')
+            self.status_btn_add_modifier_delete('disabled')
 
         def add_table():
             movie = self.movie_sql.Select_all(
@@ -528,10 +509,6 @@ class Menu:
                 table_movie.insert("", customtkinter.END, text=count[0], values=[
                     count[1], count[2], count[3], count[4], count[5], count[6], count[7], count[8]])
 
-        def status_btn(status):
-            btn_add.configure(state=status)
-            btn_modifier.configure(state=status)
-            btn_leave.configure(state=status)
 
         def close():
             frame_movie.destroy()
@@ -590,7 +567,7 @@ class Menu:
                 messagebox.showinfo(
                     'Modificar', 'Se modificaron los datos de la Pelicula')
             frame_form.destroy()
-            status_btn('normal')
+            self.status_btn_add_modifier_delete('normal')
             table()
 
         def Cancel():
@@ -598,32 +575,14 @@ class Menu:
                 'Cancelar', 'Seguro que quiere cancelar')
             if option:
                 frame_form.destroy()
-                status_btn('normal')
+                self.status_btn_add_modifier_delete('normal')
                 table()
 
         btn_close = customtkinter.CTkButton(
             frame_movie, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
 
-        lbl_title = customtkinter.CTkLabel(
-            frame_button, text="Peliculas", font=self.font_title)
-        lbl_title.place(x=30, y=25)
-
-        img_add = self.image.open_image("Image\\add.png", (20, 20))
-        btn_add = customtkinter.CTkButton(
-            frame_button, text="", image=img_add, width=30, height=30, fg_color="DARKBLUE", command=Add)
-        btn_add.place(x=440, y=25)
-
-        img_edit = self.image.open_image("Image\\edit.png", (20, 20))
-        btn_modifier = customtkinter.CTkButton(
-            frame_button, text="", image=img_edit, width=30, height=30, fg_color="DARKBLUE", command=Modifier)
-        btn_modifier.place(x=480, y=25)
-
-        img_delete = self.image.open_image("Image\\delete.png", (20, 20))
-        btn_leave = customtkinter.CTkButton(
-            frame_button, text="", image=img_delete, width=30, height=30, fg_color="DARKBLUE", command=Leave)
-        btn_leave.place(x=520, y=25)
-
+        self.create_btn_add_edit_delete(frame_button,"Pelicula", Add, Modifier, Leave)
         table()
 
     def Product(self):
@@ -690,18 +649,13 @@ class Menu:
             btn_cancel = customtkinter.CTkButton(frame_form, text="Cancelar", width=100, fg_color="RED", command=Cancel)
             btn_cancel.place(x=260, y=240)
 
-            status_btn('disabled')
+            self.status_btn_add_modifier_delete('disabled')
 
         def add_table():
             product = self.product_sql.Select_all('*','producto')
             for count in product:
                 table_Product.insert("", customtkinter.END, text=count[0], values=[
                     count[1], count[2], count[3]])
-
-        def status_btn(status):
-            btn_add.configure(state=status)
-            btn_modifier.configure(state=status)
-            btn_leave.configure(state=status)
 
         def close():
             frame_product.destroy()
@@ -748,7 +702,7 @@ class Menu:
                 self.product_sql.Modifier(id, txt_name.get(), txt_price.get(), txt_stock.get())
                 messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
             frame_form.destroy()
-            status_btn('normal')
+            self.status_btn_add_modifier_delete('normal')
             table()
 
         def Cancel():
@@ -756,27 +710,13 @@ class Menu:
                 'Cancelar', 'Seguro que quiere cancelar')
             if option:
                 frame_form.destroy()
-                status_btn('normal')
+                self.status_btn_add_modifier_delete('normal')
                 table()
 
         btn_close = customtkinter.CTkButton(frame_product, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
 
-        lbl_title = customtkinter.CTkLabel(frame_button, text="Productos", font=self.font_title)
-        lbl_title.place(x=30, y=25)
-
-        img_add = files.open_image("Image\\add.png", (20, 20))
-        btn_add = customtkinter.CTkButton(frame_button, text="", image=img_add, width=30, height=30, fg_color="DARKBLUE", command=Add)
-        btn_add.place(x=440, y=25)
-
-        img_edit = files.open_image("Image\\edit.png", (20, 20))
-        btn_modifier = customtkinter.CTkButton(frame_button, text="", image=img_edit, width=30, height=30, fg_color="DARKBLUE", command=Modifier)
-        btn_modifier.place(x=480, y=25)
-
-        img_delete = files.open_image("Image\\delete.png", (20, 20))
-        btn_leave = customtkinter.CTkButton(frame_button, text="", image=img_delete, width=30, height=30, fg_color="DARKBLUE", command=Leave)
-        btn_leave.place(x=520, y=25)
-
+        self.create_btn_add_edit_delete(frame_button, "Productos", Add, Modifier, Leave)
         table()
         
     def Showing(self):
