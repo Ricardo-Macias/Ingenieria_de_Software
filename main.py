@@ -409,27 +409,20 @@ class Menu:
                 frame_movie, width=580, height=300)
             frame_table.place(x=10, y=120)
 
-            table_movie = ttk.Treeview(frame_table, columns=(
-                'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7', 'col8'))
+            table_movie = ttk.Treeview(frame_table, columns=('col1', 'col2', 'col3', 'col4', 'col5'))
             table_movie.column('#0', width=50, anchor=customtkinter.CENTER)
             table_movie.column('col1', width=100, anchor=customtkinter.CENTER)
             table_movie.column('col2', width=140, anchor=customtkinter.CENTER)
             table_movie.column('col3', width=120, anchor=customtkinter.CENTER)
             table_movie.column('col4', width=120, anchor=customtkinter.CENTER)
             table_movie.column('col5', width=100, anchor=customtkinter.CENTER)
-            table_movie.column('col6', width=50, anchor=customtkinter.CENTER)
-            table_movie.column('col7', width=50, anchor=customtkinter.CENTER)
-            table_movie.column('col8', width=50, anchor=customtkinter.CENTER)
 
             table_movie.heading('#0', text='id')
             table_movie.heading('col1', text='Titulo')
             table_movie.heading('col2', text='Idioma')
             table_movie.heading('col3', text='Subtitulos')
-            table_movie.heading('col4', text='Sinopsis')
-            table_movie.heading('col5', text='Reparto')
-            table_movie.heading('col6', text='Poster')
-            table_movie.heading('col7', text='Duracion')
-            table_movie.heading('col8', text='Generos')
+            table_movie.heading('col4', text='Duracion')
+            table_movie.heading('col5', text='Generos')
 
             table_movie.place(x=30, y=30, width=810, height=400)
 
@@ -464,23 +457,6 @@ class Menu:
             chk_subtitles = customtkinter.CTkCheckBox(frame_form, text="Subtitulos")
             chk_subtitles.place(x=190, y=120)
 
-            """
-            lbl_synopsis = customtkinter.CTkLabel(frame_form, text="sinopsis")
-            lbl_synopsis.place(x=50, y=155)
-            txt_synopsis = customtkinter.CTkTextbox(frame_form, width=240)
-            txt_synopsis.place(x=110, y=155)
-            
-            lbl_cast = customtkinter.CTkLabel(frame_form, text="Reparto")
-            lbl_cast.place(x=50, y=225)
-            txt_cast = customtkinter.CTkEntry(frame_form, width=150)
-            txt_cast.place(x=110, y=225)
-            """
-
-            lbl_poster = customtkinter.CTkLabel(frame_form, text="Poster")
-            lbl_poster.place(x=270, y=260)
-            btn_poster = customtkinter.CTkButton(frame_form,text="Poster", command=self.image.setimage_explorer)
-            btn_poster.place(x=320, y=260)
-
             lbl_duration = customtkinter.CTkLabel(frame_form, text="Duracion")
             lbl_duration.place(x=50, y=155)
             entry_var = customtkinter.IntVar()
@@ -491,6 +467,11 @@ class Menu:
             lbl_genres.place(x=50,y=190)
             txt_genres = customtkinter.CTkEntry(frame_form, width=100)
             txt_genres.place(x=110,y=190)
+
+            lbl_poster = customtkinter.CTkLabel(frame_form, text="Poster")
+            lbl_poster.place(x=50, y=225)
+            btn_poster = customtkinter.CTkButton(frame_form, text="Poster", command=self.image.setimage_explorer)
+            btn_poster.place(x=110, y=225)
 
             btn_save = customtkinter.CTkButton(
                 frame_form, text="Guardar", width=100, fg_color="GREEN", command=lambda: Save(id, option))
@@ -507,8 +488,7 @@ class Menu:
                 '*', 'pelicula')
             for count in movie:
                 table_movie.insert("", customtkinter.END, text=count[0], values=[
-                    count[1], count[2], count[3], count[4], count[5], count[6], count[7], count[8]])
-
+                    count[1], count[2], count[3], count[7], count[8]])
 
         def close():
             frame_movie.destroy()
