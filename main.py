@@ -13,6 +13,17 @@ class Menu:
 
         self.image = image_explorer()
 
+        self.employee_sql = connection_SQL.employee('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+        self.product_sql = connection_SQL.product('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+        self.membership_sql = connection_SQL.membership('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+        self.movie_sql = connection_SQL.movie('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+
+        self.font_title = customtkinter.CTkFont(
+            family="Arial", size=30, weight="bold", slant="italic")
+        self.font_id = customtkinter.CTkFont(
+            family="Arial", size=16, weight="bold", slant="italic")
+
+    def interface(self):
         img_2 = self.image.open_image("Image\\Img_sala.jpg",(740, 450))
         lbl_fondo = customtkinter.CTkLabel(self.windows, image=img_2, text='',)
         lbl_fondo.place(x=0, y=0)
@@ -45,14 +56,6 @@ class Menu:
 
         self.btn_ticket = customtkinter.CTkButton(frame_Menu, text="Ticket", command=self.Ticket, width=80, height=40)
         self.btn_ticket.place(x=10, y=350)
-
-        self.employee_sql = connection_SQL.employee('localhost','root',passwd.passwd(),'3306','cine_paraiso')
-        self.product_sql = connection_SQL.product('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
-        self.membership_sql = connection_SQL.membership('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
-        self.movie_sql = connection_SQL.movie('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
-
-        self.font_title = customtkinter.CTkFont(family="Arial", size=30, weight="bold", slant="italic")
-        self.font_id = customtkinter.CTkFont(family="Arial", size=16, weight="bold", slant="italic")
     
     def status_btn_Menu(self,status):
         self.btn_employee.configure(state=status)
@@ -879,6 +882,7 @@ if __name__ == "__main__":
     app.resizable(False,False)
     app.title('Cinema Paraiso')
 
-    Menu(app,name,ID)
+    interface_cine = Menu(app,name,ID)
+    interface_cine.interface()
 
     app.mainloop()
