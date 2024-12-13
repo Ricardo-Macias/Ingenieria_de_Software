@@ -87,6 +87,13 @@ class Menu:
         self.btn_modifier.configure(state=status)
         self.btn_leave.configure(state=status)
     
+    def combobox_values(self,search, table, text=""):
+        list_values = []
+        values = self.movie_sql.Select_all(search, table)
+        for count_values in range(len(values)):
+            list_values.append(text + str(values[count_values][0]))
+        return list_values
+
     def Employee(self):
         self.status_btn_Menu('disabled')
         frame_employee = customtkinter.CTkFrame(self.windows, width=600, height=430)
@@ -749,13 +756,19 @@ class Menu:
 
             lbl_movie = customtkinter.CTkLabel(frame_form, text="Pelicula")
             lbl_movie.place(x=50, y=85)
-            txt_movie = customtkinter.CTkEntry(frame_form, width=240)
-            txt_movie.place(x=110, y=85)
+
+            values_movie = self.combobox_values("titulo","pelicula")
+            cmb_movie = customtkinter.CTkComboBox(frame_form,values=values_movie ,width=200)
+            cmb_movie.place(x=110, y=85)
+            cmb_movie.set("")
 
             lbl_cinema_room= customtkinter.CTkLabel(frame_form, text="Sala")
             lbl_cinema_room.place(x=50, y=120)
-            txt_cinema_room = customtkinter.CTkEntry(frame_form, width=100)
-            txt_cinema_room.place(x=110, y=120)
+
+            values_cinema_room = self.combobox_values("idsala", "sala", "Sala ")
+            cmb_cinema_room = customtkinter.CTkComboBox(frame_form, values=values_cinema_room ,width=100)
+            cmb_cinema_room.place(x=110, y=120)
+            cmb_cinema_room.set("")
 
             lbl_date = customtkinter.CTkLabel(frame_form, text="Fecha")
             lbl_date.place(x=50, y=155)
