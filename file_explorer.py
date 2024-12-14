@@ -14,7 +14,7 @@ class image_explorer:
             return img
         
     def setimage_explorer(self):
-        self.poster = filedialog.askopenfilename(title="Buscar Poster",filetypes=[("Archivos de imagen",("*.jpg","*.png","*.jpeg"))])
+        self.poster = filedialog.askopenfilename(title="Buscar Imagen",filetypes=[("Archivos de imagen",("*.jpg","*.png","*.jpeg"))])
     
     def getimage_explorer(self):
         return self.poster
