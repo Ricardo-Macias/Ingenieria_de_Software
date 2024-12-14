@@ -184,3 +184,39 @@ class movie(connect_DataBase):
             print(Ex)
         finally:
             cursor.close()
+
+class showing(connect_DataBase):
+
+    def Add(self, id, movie, cinema_room, date, price ):
+        try:
+            cursor = self.connection.cursor()
+            sql = f'INSERT INTO funcion(idfuncion, idpelicula, idsala, fecha, precio ) VALUES ({id}, "{movie}", "{cinema_room}", {date}, "{price}";)'
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+
+    def Modifier(self, id, movie, cinema_room, date, price):
+        try:
+            cursor = self.connection.cursor()
+            sql = f"UPDATE funcion SET idfuncion = '{movie}', idsala = '{cinema_room}', fecha = '{date}', precio = '{price}' WHERE idpelicula = {id};"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+
+    def Delete(self, id):
+        try:
+            cursor = self.connection.cursor()
+            sql = f"DELETE FROM funcion WHERE idfuncion = {id};"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+
