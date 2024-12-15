@@ -10,7 +10,7 @@ class connect_DataBase:#Cambiar las funciones Delete y Leave a esta clase
                                                   port=Port,
                                                   database=database_name)
     
-    def Select_one(self,search,table,column,line):
+    def Select_one(self,search,table,column,line, one=False): #MODIFICAR PARA QUE SOLO PASE UN VALOR
         try:
             cursor = self.connection.cursor()
             if isinstance(line, int):
@@ -23,7 +23,7 @@ class connect_DataBase:#Cambiar las funciones Delete y Leave a esta clase
             print(Ex)
         finally:
             cursor.close()
-            return data
+            return data[0][0] if one else data
     
     def Select_all(self, search, table):
         try:
@@ -193,7 +193,7 @@ class showing(connect_DataBase):
     def Add(self, id, movie, cinema_room, date, price ):
         try:
             cursor = self.connection.cursor()
-            sql = f'INSERT INTO funcion(idfuncion, idpelicula, idsala, fecha, precio ) VALUES ({id}, "{movie}", "{cinema_room}", {date}, "{price}";)'
+            sql = f'INSERT INTO funcion(idfuncion, idpelicula, idsala, fecha, precio ) VALUES ({id}, {movie}, {cinema_room}, "{date}", {price});'
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
@@ -204,7 +204,7 @@ class showing(connect_DataBase):
     def Modifier(self, id, movie, cinema_room, date, price):
         try:
             cursor = self.connection.cursor()
-            sql = f"UPDATE funcion SET idfuncion = '{movie}', idsala = '{cinema_room}', fecha = '{date}', precio = '{price}' WHERE idpelicula = {id};"
+            sql = f"UPDATE funcion SET idfuncion = {movie}, idsala = {cinema_room}, fecha = '{date}', precio = {price} WHERE idpelicula = {id};"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
