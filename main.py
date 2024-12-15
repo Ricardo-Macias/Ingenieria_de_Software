@@ -1,5 +1,6 @@
 import customtkinter
 from tkinter import messagebox, ttk
+from tkcalendar import Calendar, DateEntry
 
 from file_explorer import image_explorer
 import connection_SQL
@@ -17,6 +18,7 @@ class Menu:
         self.product_sql = connection_SQL.product('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
         self.membership_sql = connection_SQL.membership('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
         self.movie_sql = connection_SQL.movie('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
+        self.showing_sql = connection_SQL.showing('localhost', 'root', passwd.passwd(), '3306', 'cine_paraiso')
 
         self.font_title = customtkinter.CTkFont(
             family="Arial", size=30, weight="bold", slant="italic")
@@ -741,7 +743,7 @@ class Menu:
             add_table()
 
         def form(id, option):
-            global txt_name, txt_price, txt_stock, frame_form
+            global frame_form, cmb_movie, cmb_cinema_room, txt_date, txt_price
 
             frame_table.destroy()
 
@@ -794,10 +796,10 @@ class Menu:
             self.status_btn_add_modifier_delete('disabled')
 
         def add_table():
-            product = self.product_sql.Select_all('*', 'funcion')
-            for count in product:
+            showing = self.showing_sql.Select_all('*', 'detalle_funcion')
+            for count in showing:
                 table_showing.insert("", customtkinter.END, text=count[0], values=[
-                    count[1], count[2], count[3]])
+                    count[1], count[2], count[3], count[4]])
 
         def close():
             frame_showing.destroy()
@@ -817,9 +819,10 @@ class Menu:
                 value = table_showing.item(select, 'values')
                 form(key, 'Modificar')
 
-                txt_name.insert(0, value[0])
-                txt_price.insert(0, value[1])
-                txt_stock.insert(0, value[2])
+                cmb_movie.set( value[0])
+                cmb_cinema_room.set( value[1])
+                txt_date.insert(0, value[2])
+                txt_price.insert(0, value[3])
 
         def Leave():
             select = table_showing.focus()
@@ -832,20 +835,24 @@ class Menu:
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.product_sql.Delete(key)
+                    self.showing_sql.Delete(key)
                     table_Product.destroy()
                     table()
 
         def Save(id, option):
+            idmovie = self.showing_sql.Select_one("idpelicula","pelicula","titulo",cmb_movie.get(),True)
+            characters = "Sala "
+            idroom = cmb_cinema_room.get()
+            for x in range(len(characters)):
+                idroom = idroom.replace(characters[x],"")
+                
             if option == 'Agregar':
-                self.product_sql.Add(id, txt_name.get(),
-                                     txt_price.get(), txt_stock.get())
-                messagebox.showinfo("Agregar", "Nuevo membresia agregada")
+                self.showing_sql.Add(id,idmovie,idroom, txt_date.get(), txt_price.get())
+                messagebox.showinfo("Agregar", "Nueva funcion registrada")
             else:
-                self.product_sql.Modifier(
-                    id, txt_name.get(), txt_price.get(), txt_stock.get())
+                self.showing_sql.Modifier(id, idmovie, idroom, txt_date.get(), txt_price.get())
                 messagebox.showinfo(
-                    'Modificar', 'Se modificaron los datos de la membresia')
+                    'Modificar', 'Se modificaron los datos de la funcion')
             frame_form.destroy()
             self.status_btn_add_modifier_delete('normal')
             table()
