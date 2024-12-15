@@ -2,7 +2,7 @@ import mysql.connector
 from datetime import date
 import passwd
 
-class connect_DataBase:
+class connect_DataBase:#Cambiar las funciones Delete y Leave a esta clase
     def __init__(self,Host,username,PassWord,Port,database_name):
         self.connection = mysql.connector.connect(host=Host,
                                                   user=username,
@@ -10,10 +10,13 @@ class connect_DataBase:
                                                   port=Port,
                                                   database=database_name)
     
-    def Select_one(self,search,table,column,id_search):
+    def Select_one(self,search,table,column,line):
         try:
             cursor = self.connection.cursor()
-            sql = f"SELECT {search} FROM {table} WHERE {column} IS {id_search}"
+            if isinstance(line, int):
+                sql = f"SELECT {search} FROM {table} WHERE {column} IS {line};"
+            else:
+                sql = f"SELECT {search} FROM {table} WHERE {column} = '{line}'"
             cursor.execute(sql)
             data = cursor.fetchall()
         except Exception as Ex:
