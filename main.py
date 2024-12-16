@@ -3,6 +3,7 @@ from tkinter import messagebox, ttk
 from tkcalendar import Calendar, DateEntry
 
 from file_explorer import image_explorer
+from table import tkinter_table
 import connection_SQL
 import passwd
 
@@ -107,36 +108,8 @@ class Menu:
         frame_button = customtkinter.CTkFrame(frame_employee, width=580, height=80)
         frame_button.place(x=10, y=25)
 
-        def table():
-            global frame_table, table_Employee
-
-            frame_table = customtkinter.CTkFrame(frame_employee, width=580, height=300)
-            frame_table.place(x=10, y=120)
-
-            table_Employee = ttk.Treeview(frame_table, columns=('col1', 'col2', 'col3', 'col4', 'col5', 'col6'))
-            table_Employee.column('#0', width=50, anchor=customtkinter.CENTER)
-            table_Employee.column('col1', width=100, anchor=customtkinter.CENTER)
-            table_Employee.column('col2', width=140, anchor=customtkinter.CENTER)
-            table_Employee.column('col3', width=120, anchor=customtkinter.CENTER)
-            table_Employee.column('col4', width=120, anchor=customtkinter.CENTER)
-            table_Employee.column('col5', width=100, anchor=customtkinter.CENTER)
-            table_Employee.column('col6',width=50, anchor=customtkinter.CENTER)
-
-            table_Employee.heading('#0', text='id')
-            table_Employee.heading('col1', text='RFC')
-            table_Employee.heading('col2', text='Nombre')
-            table_Employee.heading('col3', text='Correo')
-            table_Employee.heading('col4', text='Telefono')
-            table_Employee.heading('col5', text='Direccion')
-            table_Employee.heading('col6', text='Cargo')
-
-            table_Employee.place(x=30, y=30, width=810, height=400)
-
-            add_table()
-
         def form(id, option):
             global frame_form,txt_rfc, txt_name, txt_email, txt_address, txt_phone, cmb_post
-            frame_table.destroy()
 
             frame_form = customtkinter.CTkFrame(frame_employee, width=580, height=300)
             frame_form.place(x=10, y=120)
@@ -189,28 +162,21 @@ class Menu:
 
             self.status_btn_add_modifier_delete('disabled')
 
-        def add_table():
-            employee = self.employee_sql.Select_one('*', 'empleado', 'fecha_baja', 'NULL')
-            for count in employee:
-                table_Employee.insert("", customtkinter.END, text=count[0], values=[
-                    count[1], count[2], count[3], count[4], count[5], count[6]])
-
         def close():
+            table_employee.destroy_frame()
             frame_employee.destroy()
             self.status_btn_Menu('normal')
 
         def Add():
-            id = self.membership_sql.last_id('idempleado', 'empleado') + 1
+            id = self.employee_sql.last_id('idempleado', 'empleado') + 1
             form(id, 'Agregar')
 
         def Modifier():
-            select = table_Employee.focus()
-            key = table_Employee.item(select, 'text')
+            key, value = table_employee.select_row()
 
             if key == "":
                 messagebox.showwarning("Modificar", "Selecciona un elemento")
             else:
-                value = table_Employee.item(select, 'values')
                 form(key, 'Modificar')
 
                 txt_rfc.insert(0, value[0])
@@ -221,18 +187,17 @@ class Menu:
                 cmb_post.set(value[5])
 
         def Leave():
-            select = table_Employee.focus()
-            key = table_Employee.item(select, 'text')
+            key, value = table_employee.select_row()
 
             if key == "":
                 messagebox.showwarning("Baja", "Selecciona un elemento")
             else:
-                value = table_Employee.item(select, 'values')
                 option = messagebox.askquestion('Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
                     self.employee_sql.leave(key)
-                    table_Employee.destroy()
-                    table()
+                    content = self.employee_sql.Select_one('*','empleado','fecha_baja','NULL')
+                    table_employee.clean_table()
+                    table_employee.add_content(content)
 
         def Save(id, option):
             if option == 'Agregar':
@@ -246,7 +211,9 @@ class Menu:
                     'Modificar', 'Se modificaron los datos de la membresia')
             frame_form.destroy()
             self.status_btn_add_modifier_delete('normal')
-            table()
+            content = self.employee_sql.Select_one('*', 'empleado', 'fecha_baja', 'NULL')
+            table_employee.clean_table()
+            table_employee.add_content(content)
 
         def Cancel():
             option = messagebox.askokcancel(
@@ -254,13 +221,15 @@ class Menu:
             if option:
                 frame_form.destroy()
                 self.status_btn_add_modifier_delete('normal')
-                table()
 
         btn_close = customtkinter.CTkButton(frame_employee, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
 
         self.create_btn_add_edit_delete(frame_button, "Empleado", Add, Modifier, Leave)
-        table()
+        table_employee = tkinter_table(frame_employee,('col1', 'col2', 'col3', 'col4', 'col5', 'col6'), ['ID', 'RFC', 'Nombre', 'Correo', 'Telefono', 'Direccion', 'Cargo'])
+        table_employee.create_table()
+        content = self.employee_sql.Select_one('*','empleado','fecha_baja','NULL')
+        table_employee.add_content(content)
 
     def Membership(self):
         self.status_btn_Menu('disabled')
@@ -270,33 +239,8 @@ class Menu:
         frame_button = customtkinter.CTkFrame(frame_membership, width=580, height=80)
         frame_button.place(x=10, y=25)
 
-        def table():
-            global frame_table, table_Membership
-
-            frame_table = customtkinter.CTkFrame(frame_membership, width=580, height=300)
-            frame_table.place(x=10, y=120)
-            
-            table_Membership = ttk.Treeview(frame_table, columns=(
-                'col1', 'col2', 'col3', 'col4'))
-            table_Membership.column('#0', width=50, anchor=customtkinter.CENTER)
-            table_Membership.column('col1', width=140, anchor=customtkinter.CENTER)
-            table_Membership.column('col2', width=120, anchor=customtkinter.CENTER)
-            table_Membership.column('col3', width=120, anchor=customtkinter.CENTER)
-            table_Membership.column('col4', width=100, anchor=customtkinter.CENTER)
-
-            table_Membership.heading('#0', text='ID')
-            table_Membership.heading('col1', text='Nombre')
-            table_Membership.heading('col2', text='Correo')
-            table_Membership.heading('col3', text='Tipo')
-            table_Membership.heading('col4', text='Fecha Alta')
-
-            table_Membership.place(x=30, y=30, width=810, height=400)
-
-            add_table()
-
         def form(id,option):
             global frame_form, txt_name, txt_email, cmb_type
-            frame_table.destroy()
 
             frame_form = customtkinter.CTkFrame(
                 frame_membership, width=580, height=300)
@@ -335,13 +279,8 @@ class Menu:
 
             self.status_btn_add_modifier_delete('disabled')
 
-        def add_table():
-            membership = self.membership_sql.Select_one('*','membresia','fecha_baja','NULL')
-            for count in membership:
-                table_Membership.insert("", customtkinter.END, text=count[0], values=[
-                    count[1], count[2], count[3], count[4]])
-
         def close():
+            table_membership.destroy_frame()
             frame_membership.destroy()
             self.status_btn_Menu('normal')
 
@@ -350,13 +289,11 @@ class Menu:
             form(id,'Agregar')
 
         def Modifier():
-            select = table_Membership.focus()
-            key = table_Membership.item(select, 'text')
+            key, value = table_membership.select_row()
 
             if key == "":
                 messagebox.showwarning("Modificar", "Selecciona un elemento")
             else:
-                value = table_Membership.item(select, 'values')
                 form(key, 'Modificar')
 
                 txt_name.insert(0, value[0])
@@ -364,19 +301,18 @@ class Menu:
                 cmb_type.set(value[2])
 
         def Leave():
-            select = table_Membership.focus()
-            key = table_Membership.item(select, 'text')
+            key, value = table_membership.select_row()
 
             if key == "":
                 messagebox.showwarning("Baja", "Selecciona un elemento")
             else:
-                value = table_Membership.item(select, 'values')
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
                     self.membership_sql.Leave(key)
-                    table_Membership.destroy()
-                    table()
+                    content = self.membership_sql.Select_one('*', 'membresia', 'fecha_baja', 'NULL')
+                    table_membership.clean_table()
+                    table_membership.add_content(content)
 
         def Save(id, option):
             if option == 'Agregar':
@@ -385,9 +321,12 @@ class Menu:
             else:
                 self.membership_sql.Modifier(id, txt_name.get(), txt_email.get(), cmb_type.get())
                 messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
+
             frame_form.destroy()
             self.status_btn_add_modifier_delete('normal')
-            table()
+            content = self.membership_sql.Select_one('*', 'membresia', 'fecha_baja', 'NULL')
+            table_membership.clean_table()
+            table_membership.add_content(content)
 
         def Cancel():
             option = messagebox.askokcancel(
@@ -395,14 +334,16 @@ class Menu:
             if option:
                 frame_form.destroy()
                 self.status_btn_add_modifier_delete('normal')
-                table()
 
         btn_close = customtkinter.CTkButton(
             frame_membership, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
         
         self.create_btn_add_edit_delete(frame_button, "Membresias", Add, Modifier, Leave)
-        table()
+        content = self.membership_sql.Select_one('*','membresia','fecha_baja','NULL')
+        table_membership = tkinter_table(frame_membership, ('col1','col2','col3','col4'),['ID','Nombre','Correo','Tipo','Fecha de Creacion'])
+        table_membership.create_table()
+        table_membership.add_content(content)
 
     def Movie(self):
         self.status_btn_Menu('disabled')
@@ -414,35 +355,8 @@ class Menu:
             frame_movie, width=580, height=80)
         frame_button.place(x=10, y=25)
 
-        def table():
-            global frame_table, table_movie
-
-            frame_table = customtkinter.CTkFrame(
-                frame_movie, width=580, height=300)
-            frame_table.place(x=10, y=120)
-
-            table_movie = ttk.Treeview(frame_table, columns=('col1', 'col2', 'col3', 'col4', 'col5'))
-            table_movie.column('#0', width=50, anchor=customtkinter.CENTER)
-            table_movie.column('col1', width=100, anchor=customtkinter.CENTER)
-            table_movie.column('col2', width=140, anchor=customtkinter.CENTER)
-            table_movie.column('col3', width=120, anchor=customtkinter.CENTER)
-            table_movie.column('col4', width=120, anchor=customtkinter.CENTER)
-            table_movie.column('col5', width=100, anchor=customtkinter.CENTER)
-
-            table_movie.heading('#0', text='id')
-            table_movie.heading('col1', text='Titulo')
-            table_movie.heading('col2', text='Idioma')
-            table_movie.heading('col3', text='Subtitulos')
-            table_movie.heading('col4', text='Duracion')
-            table_movie.heading('col5', text='Generos')
-
-            table_movie.place(x=30, y=30, width=810, height=400)
-
-            add_table()
-
         def form(id, option):
             global frame_form, txt_title, cmb_languages, chk_subtitles, btn_poster, txt_duraction, txt_genres
-            frame_table.destroy()
 
             frame_form = customtkinter.CTkFrame(
                 frame_movie, width=580, height=300)
@@ -495,14 +409,8 @@ class Menu:
 
             self.status_btn_add_modifier_delete('disabled')
 
-        def add_table():
-            movie = self.movie_sql.Select_all(
-                '*', 'pelicula')
-            for count in movie:
-                table_movie.insert("", customtkinter.END, text=count[0], values=[
-                    count[1], count[2], count[3], count[7], count[8]])
-
         def close():
+            table_movie.destroy_frame()
             frame_movie.destroy()
             self.status_btn_Menu('normal')
 
@@ -511,13 +419,11 @@ class Menu:
             form(id, 'Agregar')
 
         def Modifier():
-            select = table_movie.focus()
-            key = table_movie.item(select, 'text')
+            key, value = table_movie.select_row()
 
             if key == "":
                 messagebox.showwarning("Modificar", "Selecciona un elemento")
             else:
-                value = table_movie.item(select, 'values')
                 form(key, 'Modificar')
 
                 txt_title.insert(0, value[0])
@@ -526,7 +432,6 @@ class Menu:
                     chk_subtitles.select(1)
                 else:
                     chk_subtitles.deselect(0)
-                
                 #txt_synopsis.insert(0, value[3])
                 #txt_cast.insert(0, value[4])
                 #btn_poster.set(value[5])
@@ -545,8 +450,9 @@ class Menu:
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
                     self.movie_sql.Delete(key)
-                    table_movie.destroy()
-                    table()
+                    content = self.movie_sql.Select_all('*','pelicula')
+                    table_movie.clean_table()
+                    table_movie.add_content(content)
 
         def Save(id, option):
             if option == 'Agregar':
@@ -560,7 +466,9 @@ class Menu:
                     'Modificar', 'Se modificaron los datos de la Pelicula')
             frame_form.destroy()
             self.status_btn_add_modifier_delete('normal')
-            table()
+            content = self.movie_sql.Select_all('*','pelicula')
+            table_movie.clean_table()
+            table_movie.add_content(content)
 
         def Cancel():
             option = messagebox.askokcancel(
@@ -568,14 +476,16 @@ class Menu:
             if option:
                 frame_form.destroy()
                 self.status_btn_add_modifier_delete('normal')
-                table()
 
         btn_close = customtkinter.CTkButton(
             frame_movie, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
 
         self.create_btn_add_edit_delete(frame_button,"Pelicula", Add, Modifier, Leave)
-        table()
+        table_movie = tkinter_table(frame_movie, ('col1','col2','col3','col4','col5'), ['ID','Titulo','Idioma','Subtitulos','Duracion','Generos'])
+        table_movie.create_table()
+        content = self.movie_sql.Select_all('*','pelicula')
+        table_movie.add_content(content)
 
     def Product(self):
         self.status_btn_Menu('disabled')
@@ -585,31 +495,8 @@ class Menu:
         frame_button = customtkinter.CTkFrame(frame_product, width=580, height=80)
         frame_button.place(x=10, y=25)
 
-        def table():
-            global frame_table, table_Product
-
-            frame_table = customtkinter.CTkFrame(frame_product, width=580, height=300)
-            frame_table.place(x=10, y=120)
-
-            table_Product = ttk.Treeview(frame_table, columns=('col1', 'col2', 'col3'))
-            table_Product.column('#0', width=50, anchor=customtkinter.CENTER)
-            table_Product.column('col1', width=140, anchor=customtkinter.CENTER)
-            table_Product.column('col2', width=120, anchor=customtkinter.CENTER)
-            table_Product.column('col3', width=120, anchor=customtkinter.CENTER)
-
-            table_Product.heading('#0', text='ID')
-            table_Product.heading('col1', text='Nombre')
-            table_Product.heading('col2', text='Precio')
-            table_Product.heading('col3', text='Stock')
-
-            table_Product.place(x=30, y=30, width=810, height=400)
-
-            add_table()
-
         def form(id, option):
             global txt_name, txt_price, txt_stock, frame_form
-
-            frame_table.destroy()
 
             frame_form = customtkinter.CTkFrame(frame_product, width=580, height=300)
             frame_form.place(x=10, y=120)
@@ -643,13 +530,8 @@ class Menu:
 
             self.status_btn_add_modifier_delete('disabled')
 
-        def add_table():
-            product = self.product_sql.Select_all('*','producto')
-            for count in product:
-                table_Product.insert("", customtkinter.END, text=count[0], values=[
-                    count[1], count[2], count[3]])
-
         def close():
+            table_product.destroy_frame()
             frame_product.destroy()
             self.status_btn_Menu('normal')
 
@@ -658,13 +540,11 @@ class Menu:
             form(id, 'Agregar')
 
         def Modifier():
-            select = table_Product.focus()
-            key = table_Product.item(select, 'text')
+            key, value = table_product.select_row()
 
             if key == "":
                 messagebox.showwarning("Modificar", "Selecciona un elemento")
             else:
-                value = table_Product.item(select, 'values')
                 form(key, 'Modificar')
 
                 txt_name.insert(0, value[0])
@@ -672,19 +552,18 @@ class Menu:
                 txt_stock.insert(0,value[2])
 
         def Leave():
-            select = table_Product.focus()
-            key = table_Product.item(select, 'text')
+            key, value = table_product.select_row()
 
             if key == "":
                 messagebox.showwarning("Baja", "Selecciona un elemento")
             else:
-                value = table_Product.item(select, 'values')
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
                     self.product_sql.Delete(key)
-                    table_Product.destroy()
-                    table()
+                    content = self.product_sql.Select_all('*','producto')
+                    table_product.clean_table()
+                    table_product.add_content(content)
 
         def Save(id, option):
             if option == 'Agregar':
@@ -693,9 +572,12 @@ class Menu:
             else:
                 self.product_sql.Modifier(id, txt_name.get(), txt_price.get(), txt_stock.get())
                 messagebox.showinfo('Modificar', 'Se modificaron los datos de la membresia')
+    
             frame_form.destroy()
             self.status_btn_add_modifier_delete('normal')
-            table()
+            content = self.product_sql.Select_all('*', 'producto')
+            table_product.clean_table()
+            table_product.add_content(content)
 
         def Cancel():
             option = messagebox.askokcancel(
@@ -703,13 +585,15 @@ class Menu:
             if option:
                 frame_form.destroy()
                 self.status_btn_add_modifier_delete('normal')
-                table()
 
         btn_close = customtkinter.CTkButton(frame_product, width=10, height=10, text="X", fg_color="RED", command=close)
         btn_close.place(x=0, y=0)
 
         self.create_btn_add_edit_delete(frame_button, "Productos", Add, Modifier, Leave)
-        table()
+        table_product = tkinter_table(frame_product, ('col1','col2','col3'), ['ID','Nombre','precio','Stock'])
+        table_product.create_table()
+        content = self.product_sql.Select_all('*','producto')
+        table_product.add_content(content)
         
     def Showing(self):
         self.status_btn_Menu('disabled')
@@ -719,33 +603,8 @@ class Menu:
         frame_button = customtkinter.CTkFrame(frame_showing, width=580, height=80)
         frame_button.place(x=10, y=25)
 
-        def table():
-            global frame_table, table_showing
-
-            frame_table = customtkinter.CTkFrame(frame_showing, width=580, height=300)
-            frame_table.place(x=10, y=120)
-
-            table_showing = ttk.Treeview(frame_table, columns=('col1', 'col2', 'col3' ,'col4'))
-            table_showing.column('#0', width=50, anchor=customtkinter.CENTER)
-            table_showing.column('col1', width=140, anchor=customtkinter.CENTER)
-            table_showing.column('col2', width=120, anchor=customtkinter.CENTER)
-            table_showing.column('col3', width=120, anchor=customtkinter.CENTER)
-            table_showing.column('col4', width=120, anchor=customtkinter.CENTER)
-
-            table_showing.heading('#0', text='ID')
-            table_showing.heading('col1', text='Pelicula')
-            table_showing.heading('col2', text='Sala')
-            table_showing.heading('col3', text='Fecha y Hora')
-            table_showing.heading('col4', text='Precio')
-
-            table_showing.place(x=30, y=30, width=810, height=400)
-
-            add_table()
-
         def form(id, option):
             global frame_form, cmb_movie, cmb_cinema_room, txt_date, txt_price
-
-            frame_table.destroy()
 
             frame_form = customtkinter.CTkFrame(
                 frame_showing, width=580, height=300)
@@ -795,49 +654,42 @@ class Menu:
 
             self.status_btn_add_modifier_delete('disabled')
 
-        def add_table():
-            showing = self.showing_sql.Select_all('*', 'detalle_funcion')
-            for count in showing:
-                table_showing.insert("", customtkinter.END, text=count[0], values=[
-                    count[1], count[2], count[3], count[4]])
-
         def close():
+            table_showing.destroy_frame()
             frame_showing.destroy()
             self.status_btn_Menu('normal')
 
         def Add():
-            id = self.product_sql.last_id('idfuncion', 'funcion') + 1
+            id = self.showing_sql.last_id('idfuncion', 'funcion') + 1
             form(id, 'Agregar')
 
         def Modifier():
-            select = table_showing.focus()
-            key = table_showing.item(select, 'text')
+            key, value = table_showing.select_row()
 
             if key == "":
                 messagebox.showwarning("Modificar", "Selecciona un elemento")
             else:
-                value = table_showing.item(select, 'values')
                 form(key, 'Modificar')
 
                 cmb_movie.set( value[0])
-                cmb_cinema_room.set( value[1])
+                cmb_cinema_room.set( "Sala "+value[1])
                 txt_date.insert(0, value[2])
                 txt_price.insert(0, value[3])
 
         def Leave():
-            select = table_showing.focus()
-            key = table_showing.item(select, 'text')
+            key, value = table_showing.select_row()
 
             if key == "":
                 messagebox.showwarning("Baja", "Selecciona un elemento")
             else:
-                value = table_Product.item(select, 'values')
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
                     self.showing_sql.Delete(key)
-                    table_Product.destroy()
-                    table()
+
+                    content = self.showing_sql.Select_all('*', 'detalle_funcion')
+                    table_showing.clean_table()
+                    table_showing.add_content(content)
 
         def Save(id, option):
             idmovie = self.showing_sql.Select_one("idpelicula","pelicula","titulo",cmb_movie.get(),True)
@@ -853,9 +705,13 @@ class Menu:
                 self.showing_sql.Modifier(id, idmovie, idroom, txt_date.get(), txt_price.get())
                 messagebox.showinfo(
                     'Modificar', 'Se modificaron los datos de la funcion')
+                
             frame_form.destroy()
             self.status_btn_add_modifier_delete('normal')
-            table()
+
+            table_showing.clean_table()
+            content = self.showing_sql.Select_all('*', 'detalle_funcion')
+            table_showing.add_content(content)
 
         def Cancel():
             option = messagebox.askokcancel(
@@ -863,7 +719,6 @@ class Menu:
             if option:
                 frame_form.destroy()
                 self.status_btn_add_modifier_delete('normal')
-                table()
 
         btn_close = customtkinter.CTkButton(
             frame_showing, width=10, height=10, text="X", fg_color="RED", command=close)
@@ -871,7 +726,11 @@ class Menu:
 
         self.create_btn_add_edit_delete(
             frame_button, "Funciones", Add, Modifier, Leave)
-        table()
+        
+        table_showing = tkinter_table(frame_showing,('col1','col2','col3','col4'),['ID','Pelicula','Sala','Fecha y Hora', 'Precio'])
+        table_showing.create_table()
+        content = self.showing_sql.Select_all('*', 'detalle_funcion')
+        table_showing.add_content(content)
 
     def Ticket(self):
         pass
