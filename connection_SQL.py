@@ -10,7 +10,7 @@ class connect_DataBase:#Cambiar las funciones Delete y Leave a esta clase
                                                   port=Port,
                                                   database=database_name)
     
-    def Select_one(self,search,table,column,line, one=False): #MODIFICAR PARA QUE SOLO PASE UN VALOR
+    def Select_one(self,search,table,column,line, one=False):
         try:
             cursor = self.connection.cursor()
             if isinstance(line, int):
@@ -204,7 +204,7 @@ class showing(connect_DataBase):
     def Modifier(self, id, movie, cinema_room, date, price):
         try:
             cursor = self.connection.cursor()
-            sql = f"UPDATE funcion SET idfuncion = {movie}, idsala = {cinema_room}, fecha = '{date}', precio = {price} WHERE idpelicula = {id};"
+            sql = f"UPDATE funcion SET idpelicula = {movie}, idsala = {cinema_room}, fecha = '{date}', precio = {price} WHERE idfuncion = {id};"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
