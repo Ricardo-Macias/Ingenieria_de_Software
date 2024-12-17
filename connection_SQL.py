@@ -1,6 +1,5 @@
 import mysql.connector
 from datetime import date
-import passwd
 
 class connect_DataBase:#Cambiar las funciones Delete y Leave a esta clase
     def __init__(self,Host,username,PassWord,Port,database_name):
@@ -13,7 +12,7 @@ class connect_DataBase:#Cambiar las funciones Delete y Leave a esta clase
     def Select_one(self,search,table,column,line, one=False):
         try:
             cursor = self.connection.cursor()
-            if isinstance(line, int):
+            if isinstance(line, int) or line == 'NULL':
                 sql = f"SELECT {search} FROM {table} WHERE {column} IS {line};"
             else:
                 sql = f"SELECT {search} FROM {table} WHERE {column} = '{line}'"
@@ -48,6 +47,28 @@ class connect_DataBase:#Cambiar las funciones Delete y Leave a esta clase
         finally:
             cursor.close()
             return 0 if data[0] == None else data[0]
+        
+    def leave(self,table,column, search, id):
+        try:
+            cursor = self.connection.cursor()
+            sql = f"UPDATE {table} SET {column} = '{date.today()}' WHERE idempleado = {id};"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
+    
+    def delete(self, table, field_search, id):
+        try:
+            cursor = self.connection.cursor()
+            sql = f"DELETE FROM {table} WHERE {field_search} = {id};"
+            cursor.execute(sql)
+            self.connection.commit()
+        except Exception as Ex:
+            print(Ex)
+        finally:
+            cursor.close()
 
 class employee(connect_DataBase):
 
@@ -66,17 +87,6 @@ class employee(connect_DataBase):
         try:
             cursor = self.connection.cursor()
             sql = f"UPDATE empleado SET rfc = '{rfc}', nombre = '{name}', correo = '{email}', telefono = {phone}, direccion = '{addres}', cargo = '{post}' WHERE idempleado = {id};"
-            cursor.execute(sql)
-            self.connection.commit()
-        except Exception as Ex:
-            print(Ex)
-        finally:
-            cursor.close()
-
-    def leave(self,id):
-        try:
-            cursor = self.connection.cursor()
-            sql = f"UPDATE empleado SET fecha_baja = '{date.today()}' WHERE idempleado = {id};"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
@@ -108,17 +118,6 @@ class product(connect_DataBase):
         finally:
             cursor.close()
 
-    def Delete(self,id):
-        try:
-            cursor = self.connection.cursor()
-            sql = f"DELETE FROM producto WHERE idproducto = {id}"
-            cursor.execute(sql)
-            self.connection.commit()
-        except Exception as Ex:
-            print(Ex)
-        finally:
-            cursor.close()
-
 class membership(connect_DataBase):
     def Add(self,id, name, email, type):
         try:
@@ -135,17 +134,6 @@ class membership(connect_DataBase):
         try:
             cursor = self.connection.cursor()
             sql = f"UPDATE membresia SET nombre = '{name}', email = '{email}', tipo = '{type}' WHERE idmembresia = {id};"
-            cursor.execute(sql)
-            self.connection.commit()
-        except Exception as Ex:
-            print(Ex)
-        finally:
-            cursor.close()
-
-    def Leave(self, id):
-        try:
-            cursor = self.connection.cursor()
-            sql = f"UPDATE membresia SET fecha_baja = '{date.today()}' WHERE idmembresia = {id};"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:
@@ -177,17 +165,6 @@ class movie(connect_DataBase):
         finally:
             cursor.close()
 
-    def Delete(self, id):
-        try:
-            cursor = self.connection.cursor()
-            sql = f"DELETE FROM pelicula WHERE idpelicula = {id}"
-            cursor.execute(sql)
-            self.connection.commit()
-        except Exception as Ex:
-            print(Ex)
-        finally:
-            cursor.close()
-
 class showing(connect_DataBase):
 
     def Add(self, id, movie, cinema_room, date, price ):
@@ -205,17 +182,6 @@ class showing(connect_DataBase):
         try:
             cursor = self.connection.cursor()
             sql = f"UPDATE funcion SET idpelicula = {movie}, idsala = {cinema_room}, fecha = '{date}', precio = {price} WHERE idfuncion = {id};"
-            cursor.execute(sql)
-            self.connection.commit()
-        except Exception as Ex:
-            print(Ex)
-        finally:
-            cursor.close()
-
-    def Delete(self, id):
-        try:
-            cursor = self.connection.cursor()
-            sql = f"DELETE FROM funcion WHERE idfuncion = {id};"
             cursor.execute(sql)
             self.connection.commit()
         except Exception as Ex:

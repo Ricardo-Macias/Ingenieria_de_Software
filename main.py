@@ -194,7 +194,7 @@ class Menu:
             else:
                 option = messagebox.askquestion('Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.employee_sql.leave(key)
+                    self.employee_sql.leave('empleado','fecha_baja','idempleado',key)
                     content = self.employee_sql.Select_one('*','empleado','fecha_baja','NULL')
                     table_employee.clean_table()
                     table_employee.add_content(content)
@@ -309,7 +309,7 @@ class Menu:
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.membership_sql.Leave(key)
+                    self.membership_sql.leave('membresia','fecha_baja','idmembresia',key)
                     content = self.membership_sql.Select_one('*', 'membresia', 'fecha_baja', 'NULL')
                     table_membership.clean_table()
                     table_membership.add_content(content)
@@ -449,7 +449,7 @@ class Menu:
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.movie_sql.Delete(key)
+                    self.movie_sql.delete('plicula','idpelicula',key)
                     content = self.movie_sql.Select_all('*','pelicula')
                     table_movie.clean_table()
                     table_movie.add_content(content)
@@ -560,7 +560,7 @@ class Menu:
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.product_sql.Delete(key)
+                    self.product_sql.delete('producto','idproducto',key)
                     content = self.product_sql.Select_all('*','producto')
                     table_product.clean_table()
                     table_product.add_content(content)
@@ -685,7 +685,7 @@ class Menu:
                 option = messagebox.askquestion(
                     'Baja', f'Dar de baja a {value[0]}')
                 if option == 'yes':
-                    self.showing_sql.Delete(key)
+                    self.showing_sql.delete('funcion','idfuncion',key)
 
                     content = self.showing_sql.Select_all('*', 'detalle_funcion')
                     table_showing.clean_table()
