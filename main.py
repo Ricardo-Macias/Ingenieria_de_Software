@@ -148,7 +148,7 @@ class Menu:
             lbl_post = customtkinter.CTkLabel(frame_form, text="Cargo")
             lbl_post.place(x=270, y=225)
             cmb_post = customtkinter.CTkComboBox(
-                frame_form, values=["GRT", "GNL"], width=100)
+                frame_form, values=["GRT", "GNL"], width=100, state="readonly")
             cmb_post.place(x=320, y=225)
             cmb_post.set("")
 
@@ -265,7 +265,7 @@ class Menu:
             lbl_type = customtkinter.CTkLabel(frame_form, text="Tipo")
             lbl_type.place(x=50, y=200)
             cmb_type = customtkinter.CTkComboBox(
-                frame_form, values=["SLV", "GLD", "PLT"], width=100)
+                frame_form, values=["SLV", "GLD", "PLT"], width=100, state="readonly")
             cmb_type.place(x=110, y=200)
             cmb_type.set("")
 
@@ -622,7 +622,7 @@ class Menu:
             lbl_movie.place(x=50, y=85)
 
             values_movie = self.combobox_values("titulo","pelicula")
-            cmb_movie = customtkinter.CTkComboBox(frame_form,values=values_movie ,width=200)
+            cmb_movie = customtkinter.CTkComboBox(frame_form,values=values_movie ,width=200, state="readonly")
             cmb_movie.place(x=110, y=85)
             cmb_movie.set("")
 
@@ -630,7 +630,7 @@ class Menu:
             lbl_cinema_room.place(x=50, y=120)
 
             values_cinema_room = self.combobox_values("idsala", "sala", "Sala ")
-            cmb_cinema_room = customtkinter.CTkComboBox(frame_form, values=values_cinema_room ,width=100)
+            cmb_cinema_room = customtkinter.CTkComboBox(frame_form, values=values_cinema_room ,width=100, state="readonly")
             cmb_cinema_room.place(x=110, y=120)
             cmb_cinema_room.set("")
 
