@@ -57,7 +57,7 @@ class Menu:
         self.btn_showing = customtkinter.CTkButton(frame_Menu, text="Funcion", command=self.Showing, width=80, height=40)
         self.btn_showing.place(x=10, y=300)
 
-        self.btn_ticket = customtkinter.CTkButton(frame_Menu, text="Ticket", command=self.Ticket, width=80, height=40)
+        self.btn_ticket = customtkinter.CTkButton(frame_Menu, text="Ticket", command=self.Sale, width=80, height=40)
         self.btn_ticket.place(x=10, y=350)
     
     def status_btn_Menu(self,status):
@@ -732,8 +732,39 @@ class Menu:
         content = self.showing_sql.Select_all('*', 'detalle_funcion')
         table_showing.add_content(content)
 
-    def Ticket(self):
-        pass
+    def Sale(self):
+        self.status_btn_Menu('disabled')
+        frame_sale = customtkinter.CTkFrame(self.windows, width=600, height=430)
+        frame_sale.place(x=120, y=10)
+
+        frame_button = customtkinter.CTkFrame(frame_sale, width=580, height=80)
+        frame_button.place(x=10, y=25)
+
+        def form(id, option):
+            pass
+
+        def close():
+            frame_sale.destroy()
+            self.status_btn_Menu('normal')
+
+        def Add():
+            pass
+
+        def Modifier():
+            pass
+
+        def Leave():
+            pass
+
+        def Save(id, option):
+            pass
+
+        def Cancel():
+            pass
+
+        btn_close = customtkinter.CTkButton(
+            frame_sale, width=10, height=10, text="X", fg_color="RED", command=close)
+        btn_close.place(x=0, y=0)
         
 if __name__ == "__main__":
     # ----> Agregar el login
